@@ -1,3 +1,4 @@
+/* Define your CSS variables */
 :root {
     --background: #dadada;
     --primary: #83c5be;
@@ -7,7 +8,7 @@
     --quinary: #e8e8e8;
 }
 
-/* Reset some default browser styles */
+/* Apply a CSS reset */
 body, h1, h2, p, input, button {
     margin: 0;
     padding: 0;
@@ -20,13 +21,13 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh; /* Use min-height instead of height to prevent content overflow */
     background: var(--background);
-    background-color: linear-gradient(45deg, #d2dae2 25%, transparent 25%), linear-gradient(-45deg, #d2dae2 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #d2dae2 75%), linear-gradient(-45deg, transparent 75%, #d2dae2 75%);
 }
 
 .container {
     text-align: center;
+    /* Use margin for spacing */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -35,14 +36,16 @@ body {
     padding: 0 20px;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
+    /* Simplify box-shadow and use box-sizing */
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1),
     -10px -10px 30px rgba(255, 255, 255, 0.5);
     transition: all 0.3s ease-in-out;
+    /* Center the container horizontally */
+    margin: 50px auto;
 }
 
 header {
     color: var(--primary);
-    padding: 20px 0;
     position: relative;
     z-index: 1;
 }
@@ -50,35 +53,27 @@ header {
 h1, h2 {
     font-size: 36px;
     margin-top: 30px;
-    margin-bottom: 10px;
     font-weight: bold;
 }
 
 main {
-    margin: 20px 20px;
+    margin: 20px 0; /* Adjust margin */
 }
 
 iframe {
     display: block;
     border: none;
+    /* Use variables for box-shadow and border color */
     box-shadow: 0 0 10px rgba(200, 200, 200, 0.8);
 }
 
-.twitch-iframe {
-    width: 90vw;
-    height: 70vh;
-    max-width: 800px;
-    max-height: 450px;
-    transition: all 0.3s ease-in-out;
-}
-
+/* Use a common class for iframe styles */
+.twitch-iframe,
 .youtube-iframe {
-    position: inherit;
-    width: 90vw;
-    height: 70vh;
-    max-width: 800px;
-    max-height: 450px;
-    transition: all 0.3s ease-in-out;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 60vh;
+    box-shadow: 0 0 10px rgba(200, 200, 200, 0.8);
 }
 
 footer {
@@ -86,53 +81,56 @@ footer {
     color: var(--tertiary);
     padding: 10px;
     text-align: center;
+    font-size: 10px;
     position: relative;
     z-index: 1;
-    margin-top: 100px;
+    margin-top: 30px;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
+    /* Simplify box-shadow */
     box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1),
     0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Twitch Overlay Styles */
+/* Common styles for iframe wrappers */
+.iframe-wrapper {
+    width: 80vw;
+    max-width: 650px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+}
+
 .iframe-container {
     display: block;
     position: relative;
     z-index: 0;
 }
 
-.overlay {
-    position: absolute;
-    top: 85.4%;
-    left: 523px;
-    width: 78px;
-    height: 50px;
-    background: rgba(255, 0, 0, 0);
-    z-index: 2;
-}
-
 /* Login Form Styles */
 .login-form {
     padding: 20px 40px;
+    margin-top: 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 30vh;
+    height: 40vh;
     width: 50vw;
     color: var(--secondary);
     max-width: 300px;
     background: var(--background);
     border-radius: 20px;
+    /* Simplify box-shadow and backdrop-filter */
     box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1),
     -10px -10px 30px rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(9px);
-    -webkit-backdrop-filter: blur(9px);
 }
 
-.login-form h2 {
-    margin-bottom: 20px;
+.login-form h1 {
+    margin-bottom: 30px;
 }
 
 input {
@@ -142,6 +140,7 @@ input {
     border: 2px solid var(--secondary);
     border-radius: 10px;
     background: var(--background);
+    /* Simplify box-shadow */
     box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.1),
     inset -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
@@ -156,6 +155,7 @@ button {
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    /* Simplify box-shadow */
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
     -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
@@ -166,7 +166,7 @@ button:hover {
 
 .error-message {
     color: red;
-    margin-top: 10px;
+    margin-bottom: 50px;
 }
 
 #logout-button {
@@ -179,6 +179,7 @@ button:hover {
     cursor: pointer;
     font-size: 16px;
     transition: all 0.3s ease-in-out;
+    /* Simplify box-shadow */
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
     -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
@@ -204,6 +205,7 @@ button:hover {
     border-radius: 30px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    /* Simplify box-shadow */
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
     -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
@@ -215,3 +217,25 @@ button:hover {
 .serverBtn:hover {
     background-color: var(--tertiary);
 }
+
+@media (max-width: 767px) {
+    .serverBtn {
+        margin: 0 10px 10px 10px; /* Adjust margin for server buttons on phones */
+    }
+
+    .iframe-wrapper {
+        height: 30vh;
+        width: 90vw;
+    }
+
+    /* Adjust the footer margin-top for phones */
+    footer {
+        margin-top: 20px;
+    }
+}
+
+
+
+
+
+

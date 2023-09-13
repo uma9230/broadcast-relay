@@ -18,9 +18,9 @@ function Login({onLogin}) {
 
         const auth = getAuth();
         const loginError = document.getElementById("login-error");
-        // strip the "Firebase: " prefix from the error message
         loginError.innerHTML = "Logging in..."
-        signInWithEmailAndPassword(auth, username, password)
+
+        signInWithEmailAndPassword(auth, username + "@miqat.bhy", "AQ+@" + password)
             .then((userCredential) => {
                 const user = userCredential.user;
                 onLogin(user);
@@ -40,7 +40,7 @@ function Login({onLogin}) {
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
-                        placeholder="Username"
+                        placeholder="ITS"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />

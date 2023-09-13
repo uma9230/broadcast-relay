@@ -10,12 +10,8 @@ import {getAuth, signOut} from "firebase/auth";
 import {initializeApp} from "firebase/app";
 import {firebaseConfig} from "./firebase";
 
-// Your web app's Firebase configuration
-
-
 function App() {
-
-    const app = initializeApp(firebaseConfig);
+    initializeApp(firebaseConfig);
     const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
     const handleLogin = () => {

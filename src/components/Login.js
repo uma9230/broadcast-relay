@@ -10,6 +10,12 @@ function Login({onLogin}) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (!username || !password) {
+            const loginError = document.getElementById("login-error");
+            loginError.innerHTML = "Please enter a username and password.";
+            return;
+        }
+
         const auth = getAuth();
         const loginError = document.getElementById("login-error");
         // strip the "Firebase: " prefix from the error message

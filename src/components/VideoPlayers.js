@@ -65,7 +65,7 @@ function VideoPlayers({onLogout}) {
                 {activeServer === "serverB" && (
                     <iframe
                         className="twitch-iframe"
-                        src="https://player.twitch.tv/?channel=net_ttv&parent=localhost&muted=true"
+                        src="https://player.twitch.tv/?channel=aceu&parent=localhost&muted=true"
                         frameBorder="0"
                         allowFullScreen="true"
                         scrolling="no"

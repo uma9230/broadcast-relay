@@ -7,12 +7,18 @@ import VideoPlayers from "./components/VideoPlayers";
 import Footer from "./components/Footer";
 import {getAuth, signOut} from "firebase/auth";
 
+import {initializeApp} from "firebase/app";
+import {firebaseConfig} from "./firebase";
+
+// Your web app's Firebase configuration
+
+
 function App() {
+
+    const app = initializeApp(firebaseConfig);
     const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
     const handleLogin = () => {
-        // Implement your authentication logic here
-        // Set isLoggedIn to true if login is successful
         setIsLoggedIn(true);
     };
 

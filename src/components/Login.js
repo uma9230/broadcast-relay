@@ -11,6 +11,9 @@ function Login({onLogin}) {
         e.preventDefault();
 
         const auth = getAuth();
+        const loginError = document.getElementById("login-error");
+        // strip the "Firebase: " prefix from the error message
+        loginError.innerHTML = "Logging in..."
         signInWithEmailAndPassword(auth, username, password)
             .then((userCredential) => {
                 const user = userCredential.user;

@@ -65,7 +65,7 @@ function VideoPlayers({onLogout}) {
                 {activeServer === "serverB" && (
                     <iframe
                         className="twitch-iframe"
-                        src="https://player.twitch.tv/?channel=aceu&parent=localhost&muted=true&parent=bhyw-relay.vercel.app"
+                        src="https://player.twitch.tv/?channel=aceu&parent=bhyw-relay.vercel.app"
                         frameBorder="0"
                         allowFullScreen="true"
                         scrolling="no"

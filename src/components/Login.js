@@ -20,7 +20,7 @@ function Login({onLogin}) {
         const loginError = document.getElementById("login-error");
         loginError.innerHTML = "Logging in..."
 
-        signInWithEmailAndPassword(auth, username + "@miqat.bhy", "AQ+@" + password)
+        signInWithEmailAndPassword(auth, username + "@miqaat.bhy", "$" + password)
             .then((userCredential) => {
                 const user = userCredential.user;
                 onLogin(user);

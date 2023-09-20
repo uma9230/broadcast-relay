@@ -28,6 +28,10 @@ function App() {
         setIsLoggedIn(false);
     };
 
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+
     return (
         <div className="container">
             <Header/>

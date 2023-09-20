@@ -19,6 +19,7 @@ function VideoPlayers({onLogout}) {
     const remoteConfig = getRemoteConfig(app);
     remoteConfig.settings.minimumFetchIntervalMillis = 100;
 
+    // fetch the active servers from remote config
     useEffect(() => {
         fetchAndActivate(remoteConfig)
             .then(() => {
@@ -39,6 +40,10 @@ function VideoPlayers({onLogout}) {
     const handleIframeLoad = () => {
         setIframeLoaded(true);
     };
+
+    document.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+    });
 
     return (
         <main>
@@ -91,15 +96,15 @@ function VideoPlayers({onLogout}) {
                         </div>
                     }
                 </div>
+
                 {/* Video players */}
                 <div className="video-players">
                     {activeServer === "serverA" && (
                         <div className="iframe-wrapper">
                             <iframe
                                 className="youtube-iframe"
-                                src={`https://www.youtube.com/embed/${youtubeVideoId}`}
+                                src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&enablejsapi=1&origin=http://localhost&widgetid=1&https://bhyw-relay.vercel.app`}
                                 title=""
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 allowFullScreen
                                 onLoad={handleIframeLoad}
                             ></iframe>
@@ -110,7 +115,7 @@ function VideoPlayers({onLogout}) {
                             <iframe
                                 className="twitch-iframe"
                                 src={`https://player.twitch.tv/?channel=${twitchChannelName}&parent=localhost&parent=bhyw-relay.vercel.app`}
-                                allowFullScreen="true"
+                                allowFullScreen
                                 onLoad={handleIframeLoad}
                             ></iframe>
                         </div>

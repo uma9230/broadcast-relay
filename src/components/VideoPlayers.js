@@ -103,7 +103,7 @@ function VideoPlayers({onLogout}) {
                         <div className="iframe-wrapper">
                             <iframe
                                 className="youtube-iframe"
-                                src={`${youtubeVideoId}`}
+                                src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1`}
                                 title=""
                                 allowFullScreen
                                 onLoad={handleIframeLoad}

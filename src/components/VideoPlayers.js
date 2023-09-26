@@ -103,7 +103,7 @@ function VideoPlayers({onLogout}) {
                         <div className="iframe-wrapper">
                             <iframe
                                 className="youtube-iframe"
-                                src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&enablejsapi=1&origin=http://localhost&widgetid=1&https://bhyw-relay.vercel.app`}
+                                src={`${youtubeVideoId}`}
                                 title=""
                                 allowFullScreen
                                 onLoad={handleIframeLoad}

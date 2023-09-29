@@ -23,7 +23,7 @@ function Header() {
     return (
         <header>
             <h1>Bhayander West Relay</h1>
-            <h3>{`${miqaatName}`}</h3>
+            <h2>{`${miqaatName}`}</h2>
         </header>
     );
 }

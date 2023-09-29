@@ -1,8 +1,9 @@
-// VideoPlayers.js
 import React, {useEffect, useState} from "react";
 import "../App.css";
 import {fetchAndActivate, getBoolean, getRemoteConfig, getString} from "firebase/remote-config";
 import {app} from "../firebase";
+import {getAuth, signOut} from "firebase/auth";
+import {getDatabase, ref, set} from "firebase/database";
 
 function VideoPlayers({onLogout}) {
     const [youtubeVideoId, setYoutubeVideoId] = useState("");
@@ -11,6 +12,8 @@ function VideoPlayers({onLogout}) {
     const [iframeLoaded, setIframeLoaded] = useState(false);
     const [isEnabledA, setIsEnabledA] = useState(true);
     const [isEnabledB, setIsEnabledB] = useState(true);
+
+    const auth = getAuth();
 
     const handleServerChange = (server) => {
         setActiveServer(server);
@@ -41,16 +44,44 @@ function VideoPlayers({onLogout}) {
         setIframeLoaded(true);
     };
 
+    const handleLogout = () => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+            const userEmail = user.email.replace("@miqaat.bhy", ""); // Remove "@miqaat.bhy" here
+            const db = getDatabase();
+            const userRef = ref(db, `loggedInUsers/${userEmail}`);
+
+            // Update the user's login status to false
+            set(userRef, false)
+                .then(() => {
+                    signOut(auth).then(() => {
+                    });
+                    onLogout();
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        } else {
+            // User is not logged in, proceed with logout
+            onLogout();
+        }
+    };
+
     document.addEventListener("contextmenu", (e) => {
         e.preventDefault();
     });
 
     return (
         <main>
+            <div className="video-players-header">
+                <h3>Logged in as: {auth.currentUser.email.replace("@miqaat.bhy", "")}</h3>
+            </div>
+
             <div className="iframe-container">
                 {/* Server buttons */}
                 <div className="servers">
-                    {isEnabledA &&
+                    {isEnabledA && (
                         <div
                             id="serverA"
                             className={`serverBtn ${activeServer === "serverA" ? "active" : ""}`}
@@ -72,8 +103,8 @@ function VideoPlayers({onLogout}) {
                         >
                             Server A
                         </div>
-                    }
-                    {isEnabledB &&
+                    )}
+                    {isEnabledB && (
                         <div
                             className={`serverBtn ${activeServer === "serverB" ? "active" : ""}`}
                             onClick={() => {
@@ -94,7 +125,7 @@ function VideoPlayers({onLogout}) {
                         >
                             Server B
                         </div>
-                    }
+                    )}
                 </div>
 
                 {/* Video players */}
@@ -121,7 +152,7 @@ function VideoPlayers({onLogout}) {
                         </div>
                     )}
                 </div>
-                <button id="logout-button" onClick={onLogout}>
+                <button id="logout-button" onClick={handleLogout}>
                     Logout
                 </button>
             </div>

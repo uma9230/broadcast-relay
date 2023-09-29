@@ -34,12 +34,21 @@ function App() {
 
     return (
         <div className="container">
-            <Header/>
-            {isLoggedIn ? (
-                <VideoPlayers onLogout={handleLogout}/>
-            ) : (
-                <Login onLogin={handleLogin}/>
+            {isLoggedIn && (
+                <Header/>
             )}
+            <div className="content">
+                {isLoggedIn ? (
+                    <>
+                        <VideoPlayers onLogout={handleLogout}/>
+                    </>
+                ) : (
+                    <>
+                        <Header/>
+                        <Login onLogin={handleLogin}/>
+                    </>
+                )}
+            </div>
             <Footer/>
         </div>
     );

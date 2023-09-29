@@ -1,11 +1,38 @@
-// Login.js
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
+import {getDatabase, onValue, ref, set} from "firebase/database";
 import "../App.css";
 
 function Login({onLogin}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
+    const db = getDatabase();
+
+    useEffect(() => {
+        // Check if the user is already logged in using the database
+        const loggedInUsersRef = ref(db, "loggedInUsers/");
+        onValue(loggedInUsersRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data && data[username]) {
+                setIsAlreadyLoggedIn(true);
+            } else {
+                setIsAlreadyLoggedIn(false);
+            }
+        });
+    }, [db, username]);
+
+    const updateLoginStatus = (email, isLoggedIn) => {
+        // Use the username (without the "@miqaat.bhy" part) as a key to update their login status
+        const username = email.replace("@miqaat.bhy", "");
+        set(ref(db, `loggedInUsers/${username}`), isLoggedIn)
+            .then(() => {
+                console.log(`Login status updated for ${username}`);
+            })
+            .catch((error) => {
+                console.error("Error updating login status:", error);
+            });
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -18,19 +45,26 @@ function Login({onLogin}) {
 
         const auth = getAuth();
         const loginError = document.getElementById("login-error");
-        loginError.innerHTML = "Logging in..."
+        loginError.innerHTML = "Logging in...";
 
-        signInWithEmailAndPassword(auth, username + "@miqaat.bhy", "$" + password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                onLogin(user);
-            })
-            .catch((error) => {
-                const errorMessage = error.message;
-                const loginError = document.getElementById("login-error");
-                // strip the "Firebase: " prefix from the error message
-                loginError.innerHTML = errorMessage.replace("Firebase: ", "");
-            });
+        const userEmail = username + "@miqaat.bhy"; // Add "@miqaat.bhy" here
+
+        if (isAlreadyLoggedIn) {
+            // User is already logged in
+            loginError.innerHTML = "Only 1 login allowed per user.";
+        } else {
+            // User is not logged in, proceed with login
+            signInWithEmailAndPassword(auth, userEmail, "$" + password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    updateLoginStatus(userEmail, true);
+                    onLogin(user);
+                })
+                .catch((error) => {
+                    const errorMessage = error.message;
+                    loginError.innerHTML = errorMessage.replace("Firebase: ", "");
+                });
+        }
     };
 
     return (

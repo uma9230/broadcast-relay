@@ -34,14 +34,21 @@ body {
     align-items: center;
     max-width: 800px;
     padding: 0 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    /* Simplify box-shadow and use box-sizing */
-    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1),
-    -10px -10px 30px rgba(255, 255, 255, 0.5);
+    border-radius: 50px;
+    background: #dadada;
+    box-shadow: 21px 21px 41px #b9b9b9,
+    -21px -21px 41px #fbfbfb;
     transition: all 0.3s ease-in-out;
     /* Center the container horizontally */
     margin: 50px auto;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 header {
@@ -54,10 +61,6 @@ h1, h2 {
     font-size: 36px;
     margin-top: 30px;
     font-weight: bold;
-}
-
-main {
-    margin: 20px 0; /* Adjust margin */
 }
 
 iframe {
@@ -228,6 +231,10 @@ button:hover {
 @media (max-width: 767px) {
     .serverBtn {
         margin: 0 10px 10px 10px; /* Adjust margin for server buttons on phones */
+    }
+
+    .content {
+        flex-direction: column;
     }
 
     .iframe-wrapper {

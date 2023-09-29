@@ -2,12 +2,30 @@ import React, {useEffect, useState} from "react";
 import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
 import {getDatabase, onValue, ref, set} from "firebase/database";
 import "../App.css";
+import {fetchAndActivate, getBoolean, getRemoteConfig} from "firebase/remote-config";
+import {app} from "../firebase";
 
 function Login({onLogin}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
     const db = getDatabase();
+
+    const [isLoginEnabled, setIsLoginEnabled] = useState(true);
+
+    const remoteConfig = getRemoteConfig(app);
+    remoteConfig.settings.minimumFetchIntervalMillis = 100;
+
+    useEffect(() => {
+        fetchAndActivate(remoteConfig)
+            .then(() => {
+                const newIsLoginEnabled = getBoolean(remoteConfig, "IS_ENABLED_LOGIN");
+                setIsLoginEnabled(newIsLoginEnabled);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
 
     useEffect(() => {
         // Check if the user is already logged in using the database
@@ -72,19 +90,29 @@ function Login({onLogin}) {
             <div className="login-form">
                 <h1>Login</h1>
                 <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder="ITS"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <button type="submit">Login</button>
+                    {isLoginEnabled ? (
+                        <>
+                            <input
+                                type="text"
+                                placeholder="ITS"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <button type="submit">Login</button>
+                        </>
+                    ) : (
+                        <>
+                            <p>Login is currently disabled.</p>
+                            <hr></hr>
+                            <p>Login will start 30 mins before the relay.</p>
+                        </>
+                    )}
                 </form>
                 <p id="login-error" className="error-message"></p>
             </div>

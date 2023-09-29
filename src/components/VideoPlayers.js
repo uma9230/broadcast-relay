@@ -40,6 +40,36 @@ function VideoPlayers({onLogout}) {
             });
     }, []);
 
+    useEffect(() => {
+        // Add an event listener for the beforeunload event
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            // Remove the event listener when the component is unmounted
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, []);
+
+    const handleBeforeUnload = () => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+            const userEmail = user.email.replace("@miqaat.bhy", ""); // Remove "@miqaat.bhy" here
+            const db = getDatabase();
+            const userRef = ref(db, `loggedInUsers/${userEmail}`);
+
+            // Update the user's login status to false
+            set(userRef, false)
+                .then(() => {
+                    signOut(auth).then(() => {
+                    });
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    };
+
     const handleIframeLoad = () => {
         setIframeLoaded(true);
     };
@@ -134,7 +164,7 @@ function VideoPlayers({onLogout}) {
                         <div className="iframe-wrapper">
                             <iframe
                                 className="youtube-iframe"
-                                src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&enablejsapi=1&origin=http://localhost&widgetid=1&https://bhyw-relay.vercel.app`}
+                                src={`https://www.youtube.com/embed/${youtubeVideoId}?modestbranding=0&rel=0&autoplay=1&mute=0&controls=1&enablejsapi=1&origin=http://localhost&widgetid=1&https://bhyw-relay.vercel.app`}
                                 title=""
                                 allowFullScreen
                                 onLoad={handleIframeLoad}

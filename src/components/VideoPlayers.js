@@ -39,7 +39,34 @@ function VideoPlayers({onLogout}) {
                 console.error(err);
             });
     }, []);
+useEffect(() => {
+        // Add an event listener for the beforeunload event
+        window.addEventListener("beforeunload", handleBeforeUnload);
 
+        return () => {
+            // Remove the event listener when the component is unmounted
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, []);
+
+    const handleBeforeUnload = () => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+            const userEmail = user.email.replace("@miqaat.bhy", ""); // Remove "@miqaat.bhy" here
+            const db = getDatabase();
+            const userRef = ref(db, `loggedInUsers/${userEmail}`);
+
+            // Update the user's login status to false
+            set(userRef, false)
+                .then(() => {
+                    signOut(auth).then(() => {});
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }
+    };
     const handleIframeLoad = () => {
         setIframeLoaded(true);
     };

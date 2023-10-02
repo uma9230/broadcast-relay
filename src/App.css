@@ -158,7 +158,7 @@ footer {
     margin-bottom: 30px;
 }
 
-input {
+.inputs {
     width: 100%;
     padding: 10px;
     margin: 5px 0;
@@ -170,7 +170,7 @@ input {
     inset -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
 
-button {
+.login-btn {
     width: 100%;
     padding: 10px;
     background-color: var(--secondary);

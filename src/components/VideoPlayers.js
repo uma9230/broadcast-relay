@@ -4,6 +4,9 @@ import {fetchAndActivate, getBoolean, getRemoteConfig, getString} from "firebase
 import {app} from "../firebase";
 import {getAuth, signOut} from "firebase/auth";
 import {getDatabase, ref, set} from "firebase/database";
+import Plyr from "plyr-react"
+import "plyr-react/plyr.css"
+import {clearAuthData} from "../util/auth";
 
 function VideoPlayers({onLogout}) {
     const [youtubeVideoId, setYoutubeVideoId] = useState("");
@@ -12,34 +15,12 @@ function VideoPlayers({onLogout}) {
     const [iframeLoaded, setIframeLoaded] = useState(false);
     const [isEnabledA, setIsEnabledA] = useState(true);
     const [isEnabledB, setIsEnabledB] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loggedInEmail, setLoggedInEmail] = useState(null);
 
     const auth = getAuth();
 
-    const handleServerChange = (server) => {
-        setActiveServer(server);
-    };
-
-    const remoteConfig = getRemoteConfig(app);
-    remoteConfig.settings.minimumFetchIntervalMillis = 100;
-
-    // fetch the active servers from remote config
     useEffect(() => {
-        fetchAndActivate(remoteConfig)
-            .then(() => {
-                const newYoutubeVideoId = getString(remoteConfig, "YOUTUBE_VIDEO_ID");
-                const newTwitchChannelName = getString(remoteConfig, "TWITCH_CHANNEL_NAME");
-                const newIsEnabledA = getBoolean(remoteConfig, "IS_ENABLED_SERVER_A");
-                const newIsEnabledB = getBoolean(remoteConfig, "IS_ENABLED_SERVER_B");
-                setYoutubeVideoId(newYoutubeVideoId);
-                setTwitchChannelName(newTwitchChannelName);
-                setIsEnabledA(newIsEnabledA);
-                setIsEnabledB(newIsEnabledB);
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    }, []);
-useEffect(() => {
         // Add an event listener for the beforeunload event
         window.addEventListener("beforeunload", handleBeforeUnload);
 
@@ -60,13 +41,63 @@ useEffect(() => {
             // Update the user's login status to false
             set(userRef, false)
                 .then(() => {
-                    signOut(auth).then(() => {});
+                    signOut(auth).then(() => {
+                        // Perform any additional cleanup or logout actions if needed
+                        clearAuthData();
+                        onLogout();
+                    });
                 })
                 .catch((error) => {
                     console.error(error);
                 });
         }
     };
+
+
+    const handleServerChange = (server) => {
+        setActiveServer(server);
+    };
+
+    const remoteConfig = getRemoteConfig(app);
+    remoteConfig.settings.minimumFetchIntervalMillis = 100;
+
+    useEffect(() => {
+        const authStateChanged = getAuth().onAuthStateChanged((user) => {
+            if (user) {
+                setLoggedInEmail(user.email);
+                setIsLoading(false);
+            } else {
+                setLoggedInEmail(null);
+                setIsLoading(false);
+            }
+        });
+
+        return () => {
+            // Unsubscribe from the auth state change listener when the component unmounts
+            authStateChanged();
+        };
+    }, []);
+
+    // fetch the active servers from remote config
+    useEffect(() => {
+        fetchAndActivate(remoteConfig)
+            .then(() => {
+                const newYoutubeVideoId = getString(remoteConfig, "YOUTUBE_VIDEO_ID");
+                const newTwitchChannelName = getString(remoteConfig, "TWITCH_CHANNEL_NAME");
+                const newIsEnabledA = getBoolean(remoteConfig, "IS_ENABLED_SERVER_A");
+                const newIsEnabledB = getBoolean(remoteConfig, "IS_ENABLED_SERVER_B");
+                setYoutubeVideoId(newYoutubeVideoId);
+                setTwitchChannelName(newTwitchChannelName);
+                setIsEnabledA(newIsEnabledA);
+                setIsEnabledB(newIsEnabledB);
+                setIsEnabledA(true);
+                setIsEnabledB(false);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+
     const handleIframeLoad = () => {
         setIframeLoaded(true);
     };
@@ -99,10 +130,31 @@ useEffect(() => {
         e.preventDefault();
     });
 
+    const player = {
+        source: {
+            type: 'video',
+            sources: [
+                {
+                    src: `${youtubeVideoId}`,
+                    provider: 'youtube',
+                },
+            ],
+        },
+        options: {},
+    };
+
     return (
         <main>
             <div className="video-players-header">
-                <h3>Logged in as: {auth.currentUser.email.replace("@miqaat.bhy", "")}</h3>
+                {isLoading ? (
+                    <h3>Loading...</h3>
+                ) : (
+                    <h3>
+                        {loggedInEmail
+                            ? `Logged in as: ${loggedInEmail.replace("@miqaat.bhy", "")}`
+                            : "Not logged in"}
+                    </h3>
+                )}
             </div>
 
             <div className="iframe-container">
@@ -133,6 +185,7 @@ useEffect(() => {
                     )}
                     {isEnabledB && (
                         <div
+                            id="serverB"
                             className={`serverBtn ${activeServer === "serverB" ? "active" : ""}`}
                             onClick={() => {
                                 handleServerChange("serverB");
@@ -159,20 +212,17 @@ useEffect(() => {
                 <div className="video-players">
                     {activeServer === "serverA" && (
                         <div className="iframe-wrapper">
-                            <iframe
-                                className="youtube-iframe"
-                                src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&enablejsapi=1&origin=http://localhost&widgetid=1&https://bhyw-relay.vercel.app`}
-                                title=""
-                                allowFullScreen
-                                onLoad={handleIframeLoad}
-                            ></iframe>
+                            <div className={"youtube-iframe"}>
+                                <Plyr {...player} />
+                            </div>
                         </div>
                     )}
                     {activeServer === "serverB" && (
                         <div className="iframe-wrapper">
                             <iframe
-                                className="twitch-iframe"
-                                src={`https://player.twitch.tv/?channel=${twitchChannelName}&parent=localhost&parent=bhyw-relay.vercel.app`}
+                                className="youtube-iframe"
+                                src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&mute=1&enablejsapi=1&origin=http://localhost&widgetid=1&https://bhyw-relay.vercel.app`}
+                                title=""
                                 allowFullScreen
                                 onLoad={handleIframeLoad}
                             ></iframe>

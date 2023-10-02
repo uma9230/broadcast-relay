@@ -1,47 +1,40 @@
-// App.js (or any other entry point)
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "./App.css";
 import Header from "./components/Header";
 import Login from "./components/Login";
 import VideoPlayers from "./components/VideoPlayers";
 import Footer from "./components/Footer";
-import {getAuth, signOut} from "firebase/auth";
-
-import {initializeApp} from "firebase/app";
-import {firebaseConfig} from "./firebase";
+import {clearAuthData, getAuthData, setAuthData} from "./util/auth"; // Import the helper functions
 
 function App() {
-    initializeApp(firebaseConfig);
-    const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const handleLogin = () => {
+    // Check if the user is already authenticated on app load
+    useEffect(() => {
+        const authUser = getAuthData();
+
+        if (authUser) {
+            setIsLoggedIn(true);
+        }
+    }, []);
+
+    const handleLogin = (user) => {
         setIsLoggedIn(true);
+        setAuthData(user); // Store user data in localStorage
     };
 
     const handleLogout = () => {
-        const auth = getAuth();
-        signOut(auth).then(() => {
-            // Sign-out successful.
-        }).catch((error) => {
-            // An error happened.
-        });
+        // Clear authentication data from localStorage
+        clearAuthData();
         setIsLoggedIn(false);
     };
 
-    document.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-    });
-
     return (
         <div className="container">
-            {isLoggedIn && (
-                <Header/>
-            )}
+            {isLoggedIn && <Header/>}
             <div className="content">
                 {isLoggedIn ? (
-                    <>
-                        <VideoPlayers onLogout={handleLogout}/>
-                    </>
+                    <VideoPlayers onLogout={handleLogout}/>
                 ) : (
                     <>
                         <Header/>

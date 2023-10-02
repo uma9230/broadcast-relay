@@ -20,7 +20,8 @@ function Login({onLogin}) {
         fetchAndActivate(remoteConfig)
             .then(() => {
                 const newIsLoginEnabled = getBoolean(remoteConfig, "IS_ENABLED_LOGIN");
-                setIsLoginEnabled(newIsLoginEnabled);
+                // setIsLoginEnabled(newIsLoginEnabled);
+                setIsLoginEnabled(true);
             })
             .catch((err) => {
                 console.error(err);
@@ -93,18 +94,20 @@ function Login({onLogin}) {
                     {isLoginEnabled ? (
                         <>
                             <input
+                                className={"inputs"}
                                 type="text"
                                 placeholder="ITS"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />
                             <input
+                                className={"inputs"}
                                 type="password"
                                 placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
-                            <button type="submit">Login</button>
+                            <button className={"login-btn"} type="submit">Login</button>
                         </>
                     ) : (
                         <>

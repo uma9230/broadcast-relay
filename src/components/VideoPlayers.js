@@ -211,11 +211,22 @@ function VideoPlayers({onLogout}) {
                 {/* Video players */}
                 <div className="video-players">
                     {activeServer === "serverA" && (
-                        <div className="iframe-wrapper">
-                            <div className={"youtube-iframe"}>
-                                <Plyr {...player} />
-                            </div>
+                        <div className="iframe-wrapper" style={{ position: 'relative', marginBottom: '200px' }}>
+                        <div className="youtube-iframe" style={{ height: 'calc(100% - 50px)', marginTop: '50px' }}>
+                            <Plyr {...player} />
                         </div>
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '85%',
+                            background: 'rgba(0, 0, 0, 0)', // Semi-transparent black overlay
+                            pointerEvents: 'auto', // This prevents clicks on the overlay
+                          }}
+                        />
+                      </div>
                     )}
                     {activeServer === "serverB" && (
                         <div className="iframe-wrapper">
@@ -225,6 +236,7 @@ function VideoPlayers({onLogout}) {
                                 title=""
                                 allowFullScreen
                                 onLoad={handleIframeLoad}
+                                style={{ marginTop: "-50px" }}
                             ></iframe>
                         </div>
                     )}

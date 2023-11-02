@@ -6,6 +6,7 @@ import VideoPlayers from "./components/VideoPlayers";
 import Footer from "./components/Footer";
 import {clearAuthData, getAuthData, setAuthData} from "./util/auth"; // Import the helper functions
 
+
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 

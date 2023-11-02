@@ -221,8 +221,8 @@ function VideoPlayers({onLogout}) {
                             top: 0,
                             left: 0,
                             width: '100%',
-                            height: '85%',
-                            background: 'rgba(0, 0, 0, 0)', // Semi-transparent black overlay
+                              height: '35%',
+                              background: 'rgba(250,41,41,0)', // Semi-transparent black overlay
                             pointerEvents: 'auto', // This prevents clicks on the overlay
                           }}
                         />

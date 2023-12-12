@@ -1,9 +1,9 @@
 /* Define your CSS variables */
 :root {
-    --background: #dadada;
-    --primary: #83c5be;
+    --background: #ccf8ff;
+    --primary: rgb(131, 197, 190);
     --secondary: #006d77;
-    --tertiary: #0e5095;
+    --tertiary: rgb(14, 80, 149);
     --quaternary: #1b1b1e;
     --quinary: #e8e8e8;
 }
@@ -34,12 +34,6 @@ body {
     align-items: center;
     max-width: 800px;
     padding: 0 20px;
-    border-radius: 50px;
-    background: #dadada;
-    box-shadow: 21px 21px 41px #b9b9b9,
-    -21px -21px 41px #fbfbfb;
-    transition: all 0.3s ease-in-out;
-    /* Center the container horizontally */
     margin: 50px auto;
 }
 
@@ -91,7 +85,6 @@ iframe {
     width: 100%;
     aspect-ratio: 16 / 9;
     max-height: 60vh;
-    box-shadow: 0 0 10px rgba(200, 200, 200, 0.8);
 }
 
 footer {
@@ -99,14 +92,7 @@ footer {
     color: var(--tertiary);
     padding: 10px;
     text-align: center;
-    position: relative;
-    z-index: 1;
-    margin-top: 30px;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    /* Simplify box-shadow */
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1),
-    0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 .footer_text_h3 {
@@ -121,7 +107,6 @@ footer {
 .iframe-wrapper {
     width: 80vw;
     max-width: 650px;
-    margin: 0 auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -130,7 +115,6 @@ footer {
 
 .iframe-container {
     display: block;
-    position: relative;
     z-index: 0;
 }
 
@@ -147,11 +131,6 @@ footer {
     color: var(--secondary);
     max-width: 300px;
     background: var(--background);
-    border-radius: 20px;
-    /* Simplify box-shadow and backdrop-filter */
-    box-shadow: 10px 10px 30px rgba(0, 0, 0, 0.1),
-    -10px -10px 30px rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(9px);
 }
 
 .login-form h1 {
@@ -165,24 +144,18 @@ footer {
     border: 2px solid var(--secondary);
     border-radius: 10px;
     background: var(--background);
-    /* Simplify box-shadow */
-    box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.1),
-    inset -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
 
 .login-btn {
-    width: 100%;
+    width: 50%;
     padding: 10px;
     background-color: var(--secondary);
     color: #fff;
     border: none;
     margin: 20px 0;
-    border-radius: 50px;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    /* Simplify box-shadow */
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
-    -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
 
 button:hover {
@@ -243,7 +216,76 @@ button:hover {
     background-color: var(--tertiary);
 }
 
-@media (max-width: 767px) {
+/* UserManagement.css */
+.user-management {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+.user-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+input {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.delete-button {
+    background-color: #f44336;
+    color: white;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.user-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.delete-button {
+    background-color: #f44336;
+    color: white;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+footer {
+    margin-top: 10px;
+}
+
+
+@media (max-width: 768px) {
     .serverBtn {
         margin: 0 10px 10px 10px; /* Adjust margin for server buttons on phones */
     }
@@ -257,9 +299,13 @@ button:hover {
         width: 90vw;
     }
 
-    /* Adjust the footer margin-top for phones */
+    .login-form {
+        height: 50vh;
+        width:70vw;
+    }
+
     footer {
-        margin-top: 20px;
+        margin-top: 50px;
     }
 }
 

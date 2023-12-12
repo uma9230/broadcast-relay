@@ -216,7 +216,7 @@ function VideoPlayers({onLogout}) {
                             <div className="youtube-iframe" style={{height: 'calc(100% - 50px)'}}>
                                 <iframe
                                     className="youtube-iframe"
-                                    src={`${videoUrl}`}
+                                    src={videoUrl}
                                     title=""
                                     allowFullScreen
                                     onLoad={handleIframeLoad}

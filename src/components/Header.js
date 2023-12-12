@@ -22,7 +22,8 @@ function Header() {
     }, []);
     return (
         <header>
-            <h1>Bhayander West Relay</h1>
+            <h1>Anjuman - e - Badri</h1>
+            <h2>Bhayander West Relay</h2>
             <h2>{`${miqaatName}`}</h2>
         </header>
     );

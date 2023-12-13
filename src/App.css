@@ -1,33 +1,29 @@
-/* Define your CSS variables */
 :root {
-    --background: #ccf8ff;
-    --primary: rgb(131, 197, 190);
-    --secondary: #006d77;
-    --tertiary: rgb(14, 80, 149);
-    --quaternary: #1b1b1e;
-    --quinary: #e8e8e8;
+    --background: url("https://wallpapercave.com/wp/wp7786298.jpg");
+    --primary: #3498db;
+    --secondary: #696969;
+    --tertiary: #e74c3c;
+    --quaternary: #34495e;
+    --quinary: #ecf0f1;
+    --glass-border: rgba(255, 255, 255, 0.1);
 }
 
-/* Apply a CSS reset */
-body, h1, h2, p, input, button {
-    margin: 0;
-    padding: 0;
-}
-
-/* Global styles */
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Roboto", sans-serif;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Use min-height instead of height to prevent content overflow */
+    min-height: 100vh;
     background: var(--background);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff;
 }
 
 .container {
     text-align: center;
-    /* Use margin for spacing */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -35,6 +31,10 @@ body {
     max-width: 800px;
     padding: 0 20px;
     margin: 50px auto;
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    background-clip: padding-box;
 }
 
 .content {
@@ -45,72 +45,88 @@ body {
     width: 100%;
 }
 
-header {
-    color: var(--primary);
-    position: relative;
-    z-index: 1;
-}
-
 h1 {
-    font-size: 36px;
-    margin-top: 30px;
-    font-weight: bold;
-    color: var(--secondary);
+    font-size: 2.5rem;
+    margin-bottom: 20px;
 }
 
 h2 {
-    font-size: 30px;
-    margin-top: 20px;
-    font-weight: bold;
-    color: var(--primary);
+    font-size: 1.5rem;
+    margin-bottom: 20px;
 }
 
 h3 {
-    font-size: 20px;
-    margin-top: 20px;
-    font-weight: bold;
-    color: var(--tertiary);
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+h1, h2, h3 {
+    color: #545454;
+}
+.footer_text_h3 {
+    color: #545454;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.footer_text_p {
+    color: #545454;
+    font-size: 0.7rem;
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .footer_text_h3 {
+        color: #9c9c9c;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+    
+    .footer_text_p {
+        color: #9c9c9c;
+        font-size: 0.7rem;
+        margin-bottom: 20px;
+    }
+
+    .iframe-wrapper {
+        width: 80vw;
+        max-width: 650px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+        border-radius: 10px;
+        border: 1px solid var(--glass-border);
+        background-clip: padding-box;
+    }
+
+    footer {
+        margin-top: 100px;
+    }
 }
 
 iframe {
     display: block;
     border: none;
-    /* Use variables for box-shadow and border color */
     box-shadow: 0 0 10px rgba(200, 200, 200, 0.8);
 }
 
-/* Use a common class for iframe styles */
-.twitch-iframe,
-.youtube-iframe {
+.twitch-iframe, .youtube-iframe {
     width: 100%;
     aspect-ratio: 16 / 9;
     max-height: 60vh;
 }
 
-footer {
-    background-color: var(--primary);
-    color: var(--tertiary);
-    padding: 10px;
-    text-align: center;
-    border-radius: 10px;
-}
-
-.footer_text_h3 {
-    font-size: 16px;
-}
-
-.footer_text_p {
-    font-size: 10px;
-}
-
-/* Common styles for iframe wrappers */
 .iframe-wrapper {
     width: 80vw;
     max-width: 650px;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 60vh;
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    background-clip: padding-box;
 }
 
 .iframe-container {
@@ -128,13 +144,12 @@ footer {
     align-items: center;
     height: 40vh;
     width: 50vw;
-    color: var(--secondary);
+    color: #656565;
     max-width: 300px;
-    background: var(--background);
-}
-
-.login-form h1 {
-    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    background-clip: padding-box;
 }
 
 .inputs {
@@ -144,6 +159,7 @@ footer {
     border: 2px solid var(--secondary);
     border-radius: 10px;
     background: var(--background);
+    color: #fff;
 }
 
 .login-btn {
@@ -158,17 +174,17 @@ footer {
     transition: all 0.3s ease-in-out;
 }
 
-button:hover {
+.button:hover {
     background-color: var(--tertiary);
 }
 
 .error-message {
-    color: red;
+    color: #e74c3c;
     margin-bottom: 50px;
 }
 
 #logout-button {
-    background-color: #ff0000;
+    background-color: var(--tertiary);
     color: #fff;
     border: none;
     padding: 10px 20px;
@@ -177,13 +193,12 @@ button:hover {
     cursor: pointer;
     font-size: 16px;
     transition: all 0.3s ease-in-out;
-    /* Simplify box-shadow */
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
-    -5px -5px 10px rgba(255, 255, 255, 0.5);
+                -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
 
 #logout-button:hover {
-    background-color: #cc0000;
+    background-color: #c0392b;
 }
 
 /* Server Buttons Styles */
@@ -203,9 +218,8 @@ button:hover {
     border-radius: 30px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    /* Simplify box-shadow */
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
-    -5px -5px 10px rgba(255, 255, 255, 0.5);
+                -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
 
 .serverBtn:active {
@@ -215,103 +229,3 @@ button:hover {
 .serverBtn:hover {
     background-color: var(--tertiary);
 }
-
-/* UserManagement.css */
-.user-management {
-    background-color: #f0f0f0;
-    padding: 20px;
-    border-radius: 8px;
-    margin: 20px;
-}
-
-.user-form {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-}
-
-input {
-    margin-bottom: 10px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.add-button {
-    background-color: #4caf50;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.delete-button {
-    background-color: #f44336;
-    color: white;
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.user-item {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.user-info {
-    flex: 1;
-    margin-right: 10px;
-}
-
-.delete-button {
-    background-color: #f44336;
-    color: white;
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-footer {
-    margin-top: 10px;
-}
-
-
-@media (max-width: 768px) {
-    .serverBtn {
-        margin: 0 10px 10px 10px; /* Adjust margin for server buttons on phones */
-    }
-
-    .content {
-        flex-direction: column;
-    }
-
-    .iframe-wrapper {
-        height: 30vh;
-        width: 90vw;
-    }
-
-    .login-form {
-        height: 50vh;
-        width:70vw;
-    }
-
-    footer {
-        margin-top: 50px;
-    }
-}
-
-
-
-
-
-
-

@@ -30,21 +30,15 @@ function VideoPlayers({onLogout}) {
     }, []);
 
     const handleBeforeUnload = () => {
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (user) {
-            const userEmail = user.email.replace("@miqaat.bhy", ""); // Remove "@miqaat.bhy" here
+        // Clear authentication data from localStorage
+        clearAuthData();
+        // Update the user's login status to false
+        if (loggedInEmail) {
+            const userEmail = loggedInEmail.replace("@miqaat.bhy", ""); // Remove "@miqaat.bhy" here
             const db = getDatabase();
             const userRef = ref(db, `loggedInUsers/${userEmail}`);
-
-            // Update the user's login status to false
             set(userRef, false)
                 .then(() => {
-                    signOut(auth).then(() => {
-                        // Perform any additional cleanup or logout actions if needed
-                        clearAuthData();
-                        onLogout();
-                    });
                 })
                 .catch((error) => {
                     console.error(error);

@@ -25,7 +25,7 @@ body {
 .container {
     text-align: center;
     display: flex;
-    flex-direction: column;
+    flex-direction:column;
     justify-content: center;
     align-items: center;
     max-width: 800px;
@@ -45,19 +45,29 @@ body {
     width: 100%;
 }
 
+.logo {
+    width: 50%;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 h1 {
     font-size: 2.5rem;
-    margin-bottom: 20px;
 }
 
 h2 {
     font-size: 1.5rem;
-    margin-bottom: 20px;
 }
 
 h3 {
     font-size: 1.2rem;
-    margin-bottom: 20px;
 }
 
 h1, h2, h3 {
@@ -73,36 +83,6 @@ h1, h2, h3 {
     color: #545454;
     font-size: 0.7rem;
     margin-bottom: 20px;
-}
-
-@media screen and (max-width: 768px) {
-    .footer_text_h3 {
-        color: #9c9c9c;
-        font-size: 1.2rem;
-        margin-bottom: 20px;
-    }
-    
-    .footer_text_p {
-        color: #9c9c9c;
-        font-size: 0.7rem;
-        margin-bottom: 20px;
-    }
-
-    .iframe-wrapper {
-        width: 80vw;
-        max-width: 650px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        backdrop-filter: blur(5px);
-        border-radius: 10px;
-        border: 1px solid var(--glass-border);
-        background-clip: padding-box;
-    }
-
-    footer {
-        margin-top: 100px;
-    }
 }
 
 iframe {
@@ -135,6 +115,16 @@ iframe {
 }
 
 /* Login Form Styles */
+
+.login-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    gap: 20px;
+}
+
 .login-form {
     padding: 20px 40px;
     margin-top: 50px;
@@ -152,6 +142,7 @@ iframe {
     background-clip: padding-box;
 }
 
+
 .inputs {
     width: 100%;
     padding: 10px;
@@ -159,9 +150,10 @@ iframe {
     border: 2px solid var(--secondary);
     border-radius: 10px;
     background: var(--background);
-    color: #fff;
+    color: #545455;
+    text-align: center;
+    font-size: 1.5rem;
 }
-
 .login-btn {
     width: 50%;
     padding: 10px;
@@ -174,8 +166,8 @@ iframe {
     transition: all 0.3s ease-in-out;
 }
 
-.button:hover {
-    background-color: var(--tertiary);
+.login-btn:hover {
+    background-color: #9c9c9c;
 }
 
 .error-message {
@@ -228,4 +220,43 @@ iframe {
 
 .serverBtn:hover {
     background-color: var(--tertiary);
+}
+
+@media screen and (max-width: 768px) {
+    .footer_text_h3 {
+        color: #9c9c9c;
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .footer_text_p {
+        color: #9c9c9c;
+        font-size: 0.7rem;
+        margin-bottom: 20px;
+    }
+
+    .iframe-wrapper {
+        width: 80vw;
+        max-width: 650px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(5px);
+        border-radius: 10px;
+        border: 1px solid var(--glass-border);
+        background-clip: padding-box;
+    }
+
+    footer {
+        margin-top: 100px;
+    }
+    .logo{
+        width: 30%;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+
+    .login-container {
+        flex-direction: column;
+    }
 }

@@ -4,17 +4,13 @@ import {getDatabase, onValue, ref, set} from "firebase/database";
 import "../App.css";
 import {fetchAndActivate, getBoolean, getRemoteConfig} from "firebase/remote-config";
 import {app} from "../firebase";
-import { useNavigate  } from "react-router-dom";
-import UserManagement from "./UserManagement";
+import Header from "./Header";
 
 function Login({onLogin}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
-    const [userIsAdmin, setUserIsAdmin] = useState(false);
-
     const db = getDatabase();
-    const navigate  = useNavigate();
 
     const [isLoginEnabled, setIsLoginEnabled] = useState(true);
 
@@ -70,32 +66,28 @@ function Login({onLogin}) {
         const loginError = document.getElementById("login-error");
         loginError.innerHTML = "Logging in...";
 
-        const userEmail = username + "@miqaat.bhy";
+        const userEmail = username + "@miqaat.bhy"; // Add "@miqaat.bhy" here
 
         if (isAlreadyLoggedIn) {
             loginError.innerHTML = "Only 1 login allowed per user.";
         } else {
-            if (password === "30389905" && username === "admin") {
-                loginError.innerHTML = "Logging in as admin...";
-                setUserIsAdmin(true);
-                loginError.innerHTML = "Logged in as admin.";
-            } else {
-                signInWithEmailAndPassword(auth, userEmail, "$" + password)
-                    .then((userCredential) => {
-                        const user = userCredential.user;
-                        updateLoginStatus(userEmail, true);
-                        onLogin(user);
-                    })
-                    .catch((error) => {
-                        const errorMessage = error.message;
-                        loginError.innerHTML = errorMessage.replace("Firebase: ", "");
-                    });
-            }
+            // User is not logged in, proceed with login
+            signInWithEmailAndPassword(auth, userEmail, "$" + password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    updateLoginStatus(userEmail, true);
+                    onLogin(user);
+                })
+                .catch((error) => {
+                    const errorMessage = error.message;
+                    loginError.innerHTML = errorMessage.replace("Firebase: ", "");
+                });
         }
     };
 
     return (
         <div className="login-container">
+            <Header/>
             <div className="login-form">
                 <h1>Login</h1>
                 <form onSubmit={handleSubmit}>
@@ -125,10 +117,8 @@ function Login({onLogin}) {
                         </>
                     )}
                 </form>
-
                 <p id="login-error" className="error-message"></p>
             </div>
-            {userIsAdmin && <UserManagement />}
         </div>
     );
 }

@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { collection, setDoc, doc, getDocs } from "firebase/firestore";
-import {deleteDoc} from "firebase/firestore";
-import { getFirestore } from "firebase/firestore";
-import { app } from "../firebase";
+import React, {useEffect, useState} from "react";
+import {collection, deleteDoc, doc, getDocs, getFirestore, setDoc} from "firebase/firestore";
+import {app} from "../firebase";
 import {getDatabase, onValue, ref, set} from "firebase/database";
 import {createUserWithEmailAndPassword} from "firebase/auth";
 

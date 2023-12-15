@@ -11,3 +11,12 @@ export const getAuthData = () => {
 export const clearAuthData = () => {
     localStorage.removeItem("authUser");
 };
+
+// Add the following functions
+export const setStoredUserEmail = (email) => {
+    localStorage.setItem("userEmail", email);
+};
+
+export const getStoredUserEmail = () => {
+    return localStorage.getItem("userEmail");
+};

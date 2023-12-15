@@ -19,6 +19,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     color: #fff;
 }
 
@@ -35,6 +36,12 @@ body {
     border-radius: 20px;
     border: 1px solid var(--glass-border);
     background-clip: padding-box;
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        backdrop-filter: blur(5px);
+    }
 }
 
 .content {
@@ -122,18 +129,15 @@ iframe {
     justify-content: center;
     align-items: center;
     margin-top: 50px;
-    gap: 20px;
 }
 
 .login-form {
     padding: 20px 40px;
-    margin-top: 50px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 40vh;
-    width: 50vw;
+    width: 100vw;
     color: #656565;
     max-width: 300px;
     backdrop-filter: blur(10px);
@@ -145,8 +149,8 @@ iframe {
 
 .inputs {
     width: 100%;
+    margin: 10px 0;
     padding: 10px;
-    margin: 5px 0;
     border: 2px solid var(--secondary);
     border-radius: 10px;
     background: var(--background);
@@ -163,6 +167,7 @@ iframe {
     margin: 20px 0;
     border-radius: 10px;
     cursor: pointer;
+    font-size: 1.5rem;
     transition: all 0.3s ease-in-out;
 }
 

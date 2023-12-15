@@ -5,7 +5,6 @@ import Login from "./components/Login";
 import VideoPlayers from "./components/VideoPlayers";
 import Footer from "./components/Footer";
 import {clearAuthData, getAuthData, setAuthData} from "./util/auth";
-import UserManagement from "./components/UserManagement"; // Import the helper functions
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,7 +31,7 @@ function App() {
 
     return (
         <div className="container">
-            <Header/>
+            {isLoggedIn && <Header/>}
             <div className="content">
                 {isLoggedIn ? (
                     <VideoPlayers onLogout={handleLogout}/>

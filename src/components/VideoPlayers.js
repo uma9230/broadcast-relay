@@ -5,6 +5,7 @@ import {app} from "../firebase";
 import {getAuth, signOut} from "firebase/auth";
 import {getDatabase, ref, set} from "firebase/database";
 import "plyr-react/plyr.css"
+import {clearAuthData} from "../util/auth";
 
 function VideoPlayers({onLogout}) {
     const [videoUrl, setVideoUrl] = useState("");

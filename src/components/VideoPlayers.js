@@ -13,6 +13,7 @@ function VideoPlayers({ onLogout }) {
     const [isEnabledA, setIsEnabledA] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [loggedInEmail, setLoggedInEmail] = useState(null);
+    const [showPlayer, setShowPlayer] = useState(null);
 
     const auth = getAuth();
 
@@ -61,9 +62,11 @@ function VideoPlayers({ onLogout }) {
             .then(() => {
                 const newVideoUrl = getString(remoteConfig, "video_url_or_id");
                 const newIsEnabledA = getBoolean(remoteConfig, "IS_ENABLED_SERVER_A");
+                const newShowPlayer = getBoolean(remoteConfig, "SHOW_PLAYER");
 
                 setVideoUrl(newVideoUrl);
                 setIsEnabledA(newIsEnabledA);
+                setShowPlayer(newShowPlayer)
             })
             .catch((err) => {
                 console.error(err);
@@ -137,7 +140,8 @@ function VideoPlayers({ onLogout }) {
                 <div className="servers"></div>
 
                 {/* Video players */}
-                <div className="video-players">
+                { showPlayer ? (
+                    <div className="video-players">
                     {activeServer === "serverA" && (
                         <div className="iframe-wrapper">
                             <div className="youtube-iframe" style={{ height: "calc(100% - 50px)" }}>
@@ -151,7 +155,13 @@ function VideoPlayers({ onLogout }) {
                             </div>
                         </div>
                     )}
-                </div>
+                    </div>
+                ) : (
+                    <div className="video-players">
+                        <h3>Video player is disabled</h3>
+                    </div>
+                )}
+                
             </div>
         </main>
     );

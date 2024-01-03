@@ -5,12 +5,15 @@ import {getAuth, onAuthStateChanged, signOut} from "firebase/auth";
 import {getDatabase, ref, set} from "firebase/database";
 import "plyr-react/plyr.css";
 import {setStoredUserEmail} from "../util/auth";
+import Plyr from "plyr-react";
 
 function VideoPlayers({ onLogout }) {
     const [videoUrl, setVideoUrl] = useState("");
+    const [youtubeVideoURL, setYoutubeVideoURL] = useState("");
     const [activeServer, setActiveServer] = useState("serverA");
     const [iframeLoaded, setIframeLoaded] = useState(false);
     const [isEnabledA, setIsEnabledA] = useState(true);
+    const [isEnabledB, setIsEnabledB] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [loggedInEmail, setLoggedInEmail] = useState(null);
     const [showPlayer, setShowPlayer] = useState(null);
@@ -61,11 +64,15 @@ function VideoPlayers({ onLogout }) {
         fetchAndActivate(remoteConfig)
             .then(() => {
                 const newVideoUrl = getString(remoteConfig, "video_url_or_id");
+                const newYoutubeVideoUrl = getString(remoteConfig, "youtube_CHANNEL_NAME");
                 const newIsEnabledA = getBoolean(remoteConfig, "IS_ENABLED_SERVER_A");
+                const newIsEnabledB = getBoolean(remoteConfig, "IS_ENABLED_SERVER_B");
                 const newShowPlayer = getBoolean(remoteConfig, "SHOW_PLAYER");
 
                 setVideoUrl(newVideoUrl);
+                setYoutubeVideoURL(newYoutubeVideoUrl);
                 setIsEnabledA(newIsEnabledA);
+                setIsEnabledB(newIsEnabledB);
                 setShowPlayer(newShowPlayer)
             })
             .catch((err) => {
@@ -111,7 +118,7 @@ function VideoPlayers({ onLogout }) {
             type: "video",
             sources: [
                 {
-                    src: "https://finally-central-snake.ngrok-free.app/embed/video/",
+                    src: `https://www.youtube.com/watch?v=${youtubeVideoURL}`,
                     provider: "youtube",
                 },
             ],
@@ -137,7 +144,24 @@ function VideoPlayers({ onLogout }) {
             </button>
             <div className="iframe-container">
                 {/* Server buttons */}
-                <div className="servers"></div>
+                <div className="servers">
+                    {isEnabledA && (
+                        <button
+                            className={`serverBtn ${activeServer === "serverA" ? "active" : ""}`}
+                            onClick={() => handleServerChange("serverA")}
+                        >
+                            Server A
+                        </button>
+                    )}
+                    {isEnabledB && (
+                        <button
+                            className={`serverBtn ${activeServer === "serverB" ? "active" : ""}`}
+                            onClick={() => handleServerChange("serverB")}
+                        >
+                            Server B
+                        </button>
+                    )}
+                </div>
 
                 {/* Video players */}
                 { showPlayer ? (
@@ -152,6 +176,13 @@ function VideoPlayers({ onLogout }) {
                                     allowFullScreen
                                     onLoad={handleIframeLoad}
                                 ></iframe>
+                            </div>
+                        </div>
+                    )}
+                    {activeServer === "serverB" && (
+                        <div className="iframe-wrapper">
+                            <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
+                                <Plyr source={player.source} options={player.options} />
                             </div>
                         </div>
                     )}

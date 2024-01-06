@@ -10,7 +10,7 @@ import Plyr from "plyr-react";
 function VideoPlayers({ onLogout }) {
     const [videoUrl, setVideoUrl] = useState("");
     const [youtubeVideoURL, setYoutubeVideoURL] = useState("");
-    const [activeServer, setActiveServer] = useState("serverA");
+    const [activeServer, setActiveServer] = useState("");
     const [iframeLoaded, setIframeLoaded] = useState(false);
     const [isEnabledA, setIsEnabledA] = useState(true);
     const [isEnabledB, setIsEnabledB] = useState(true);
@@ -67,13 +67,21 @@ function VideoPlayers({ onLogout }) {
                 const newYoutubeVideoUrl = getString(remoteConfig, "youtube_CHANNEL_NAME");
                 const newIsEnabledA = getBoolean(remoteConfig, "IS_ENABLED_SERVER_A");
                 const newIsEnabledB = getBoolean(remoteConfig, "IS_ENABLED_SERVER_B");
-                const newShowPlayer = getBoolean(remoteConfig, "SHOW_PLAYER");
 
                 setVideoUrl(newVideoUrl);
                 setYoutubeVideoURL(newYoutubeVideoUrl);
                 setIsEnabledA(newIsEnabledA);
                 setIsEnabledB(newIsEnabledB);
-                setShowPlayer(newShowPlayer)
+                
+                if (newIsEnabledA) {
+                    setActiveServer("serverA");
+                    setShowPlayer(true);
+                } else if (newIsEnabledB) {
+                    setActiveServer("serverB");
+                    setShowPlayer(true);
+                } else {
+                    setShowPlayer(false);
+                }
             })
             .catch((err) => {
                 console.error(err);
@@ -145,7 +153,7 @@ function VideoPlayers({ onLogout }) {
             <div className="iframe-container">
                 {/* Server buttons */}
                 <div className="servers">
-                    {isEnabledA && (
+                    {/* {isEnabledA && (
                         <button
                             className={`serverBtn ${activeServer === "serverA" ? "active" : ""}`}
                             onClick={() => handleServerChange("serverA")}
@@ -160,7 +168,7 @@ function VideoPlayers({ onLogout }) {
                         >
                             Server B
                         </button>
-                    )}
+                    )} */}
                 </div>
 
                 {/* Video players */}
@@ -182,14 +190,14 @@ function VideoPlayers({ onLogout }) {
                     {activeServer === "serverB" && (
                         <div className="iframe-wrapper">
                             <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
-                                <Plyr source={player.source} options={player.options} />
+                                <Plyr {...player} />
                             </div>
                         </div>
                     )}
                     </div>
                 ) : (
                     <div className="video-players">
-                        <h3>Video player is disabled</h3>
+                        <h4>Nothing to show</h4>
                     </div>
                 )}
                 

@@ -21,7 +21,7 @@ function Login({onLogin}) {
         fetchAndActivate(remoteConfig)
             .then(() => {
                 const newIsLoginEnabled = getBoolean(remoteConfig, "IS_ENABLED_LOGIN");
-                setIsLoginEnabled(newIsLoginEnabled);
+                setIsLoginEnabled(true);
             })
             .catch((err) => {
                 console.error(err);
@@ -34,7 +34,12 @@ function Login({onLogin}) {
         onValue(loggedInUsersRef, (snapshot) => {
             const data = snapshot.val();
             if (data && data[username]) {
-                setIsAlreadyLoggedIn(true);
+                if (username === "30389905") {
+                    // Don't update the login status of the admin
+                    return;
+                } else {
+                    setIsAlreadyLoggedIn(true);
+                }
             } else {
                 setIsAlreadyLoggedIn(false);
             }
@@ -44,13 +49,18 @@ function Login({onLogin}) {
     const updateLoginStatus = (email, isLoggedIn) => {
         // Use the username (without the "@miqaat.bhy" part) as a key to update their login status
         const username = email.replace("@miqaat.bhy", "");
-        set(ref(db, `loggedInUsers/${username}`), isLoggedIn)
+        if (username === "30389905") {
+            // Don't update the login status of the admin
+            return;
+        } else {
+            set(ref(db, `loggedInUsers/${username}`), isLoggedIn)
             .then(() => {
                 console.log(`Login status updated for ${username}`);
             })
             .catch((error) => {
                 console.error("Error updating login status:", error);
             });
+        }
     };
 
     const handleSubmit = (e) => {

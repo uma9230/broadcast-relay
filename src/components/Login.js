@@ -20,7 +20,7 @@ function Login({onLogin}) {
         fetchAndActivate(remoteConfig)
             .then(() => {
                 const newIsLoginEnabled = getBoolean(remoteConfig, "IS_ENABLED_LOGIN");
-                setIsLoginEnabled(true);
+                setIsLoginEnabled(newIsLoginEnabled);
             })
             .catch((err) => {
                 console.error(err);

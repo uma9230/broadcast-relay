@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from "react";
-import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
 import {getDatabase, onValue, ref, set} from "firebase/database";
+import { doc, getDoc } from "firebase/firestore";
 import "../App.css";
 import {fetchAndActivate, getBoolean, getRemoteConfig} from "firebase/remote-config";
-import {app} from "../firebase";
+import {app, db, Realtimedb} from "../firebase";
 import Header from "./Header";
 
 function Login({onLogin}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
-    const db = getDatabase();
 
     const [isLoginEnabled, setIsLoginEnabled] = useState(true);
 
@@ -21,46 +20,39 @@ function Login({onLogin}) {
         fetchAndActivate(remoteConfig)
             .then(() => {
                 const newIsLoginEnabled = getBoolean(remoteConfig, "IS_ENABLED_LOGIN");
-                setIsLoginEnabled(newIsLoginEnabled);
+                setIsLoginEnabled(true);
             })
             .catch((err) => {
                 console.error(err);
             });
-    }, []);
+    }, [remoteConfig]);
 
     useEffect(() => {
-        // Check if the user is already logged in using the database
-        const loggedInUsersRef = ref(db, "loggedInUsers/");
+        const loggedInUsersRef = ref(Realtimedb, "loggedInUsers");
         onValue(loggedInUsersRef, (snapshot) => {
             const data = snapshot.val();
-            if (data && data[username]) {
-                if (username === "30389905") {
-                    // Don't update the login status of the admin
-                    return;
-                } else {
-                    setIsAlreadyLoggedIn(true);
+            if (data) {
+                const loggedInUsers = Object.keys(data);
+                if (loggedInUsers.includes(username)) {
+                    if (data[username].login_status) {
+                        if(username === "admin") {
+                            setIsAlreadyLoggedIn(false);
+                        } else {
+                            setIsAlreadyLoggedIn(true);
+                        }
+                    }
+                    else {
+                        setIsAlreadyLoggedIn(false);
+                    }
                 }
-            } else {
-                setIsAlreadyLoggedIn(false);
             }
         });
-    }, [db, username]);
+    }, [username]);
 
-    const updateLoginStatus = (email, isLoggedIn) => {
-        // Use the username (without the "@miqaat.bhy" part) as a key to update their login status
-        const username = email.replace("@miqaat.bhy", "");
-        if (username === "30389905") {
-            // Don't update the login status of the admin
-            return;
-        } else {
-            set(ref(db, `loggedInUsers/${username}`), isLoggedIn)
-            .then(() => {
-                console.log(`Login status updated for ${username}`);
-            })
-            .catch((error) => {
-                console.error("Error updating login status:", error);
-            });
-        }
+    const updateLoginStatus = (username, isLoggedIn, user) => {
+        set(ref(Realtimedb, `loggedInUsers/${username}/login_status`), isLoggedIn)
+        set(ref(Realtimedb, `loggedInUsers/${username}/login_time`), new Date().toLocaleString())
+        set(ref(Realtimedb, `loggedInUsers/${username}/name`), user.name)
     };
 
     const handleSubmit = (e) => {
@@ -72,25 +64,29 @@ function Login({onLogin}) {
             return;
         }
 
-        const auth = getAuth();
         const loginError = document.getElementById("login-error");
         loginError.innerHTML = "Logging in...";
-
-        const userEmail = username + "@miqaat.bhy"; // Add "@miqaat.bhy" here
 
         if (isAlreadyLoggedIn) {
             loginError.innerHTML = "Only 1 login allowed per user.";
         } else {
-            // User is not logged in, proceed with login
-            signInWithEmailAndPassword(auth, userEmail, "$" + password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    updateLoginStatus(userEmail, true);
-                    onLogin(user);
+            const docRef = doc(db, "users", username);
+            getDoc(docRef)
+                .then((docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if (data.password === password) {
+                            onLogin(username);
+                            updateLoginStatus(username, true, data);
+                        } else {
+                            loginError.innerHTML = "Invalid password.";
+                        }
+                    } else {
+                        loginError.innerHTML = "No such user exists.";
+                    }
                 })
                 .catch((error) => {
-                    const errorMessage = error.message;
-                    loginError.innerHTML = errorMessage.replace("Firebase: ", "");
+                    console.error("Error getting document:", error);
                 });
         }
     };
@@ -107,6 +103,7 @@ function Login({onLogin}) {
                                 className={"inputs"}
                                 type="text"
                                 placeholder="ITS"
+                                maxLength={8}
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />

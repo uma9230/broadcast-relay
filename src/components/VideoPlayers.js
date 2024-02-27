@@ -1,10 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React,{useEffect, useState} from "react";
 import {fetchAndActivate, getBoolean, getRemoteConfig, getString} from "firebase/remote-config";
-import {app} from "../firebase";
-import {getAuth, onAuthStateChanged, signOut} from "firebase/auth";
-import {getDatabase, ref, set} from "firebase/database";
+import {app, Realtimedb} from "../firebase";
+import {child, get, ref, set} from "firebase/database";
 import "plyr-react/plyr.css";
-import {setStoredUserEmail} from "../util/auth";
 import Plyr from "plyr-react";
 
 function VideoPlayers({ onLogout }) {
@@ -15,47 +13,59 @@ function VideoPlayers({ onLogout }) {
     const [isEnabledA, setIsEnabledA] = useState(true);
     const [isEnabledB, setIsEnabledB] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
-    const [loggedInEmail, setLoggedInEmail] = useState(null);
+    const [username, setUsername] = useState(null);
+    const [name, setName] = useState(null);
     const [showPlayer, setShowPlayer] = useState(null);
+    
+    const handleServerChange = (server) => {
+        setActiveServer(server);
+    };
 
-    const auth = getAuth();
-
-    useEffect(() => {
-        const unsubscribeAuthState = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setStoredUserEmail(user.email); // Store user email in localStorage
-                setLoggedInEmail(user.email);
-                setIsLoading(false);
-            } else {
-                setStoredUserEmail(null);
-                setLoggedInEmail(null);
-                setIsLoading(false);
-            }
-        });
-
-        return () => {
-            unsubscribeAuthState();
-        };
-    }, []);
+    const handleIframeLoad = () => {
+        setIframeLoaded(true);
+    };
 
     useEffect(() => {
-        if (loggedInEmail) {
+        fetchRemoteConfig();
+        setUsername(localStorage.getItem("authUser"));
+        
+        if (username) {
             // Update the user's login status in the database
-            const userEmail = loggedInEmail.replace("@miqaat.bhy", ""); // Remove "@miqaat.bhy" here
-            const db = getDatabase();
-            const userRef = ref(db, `loggedInUsers/${userEmail}`);
-            set(userRef, true)
-                .then(() => {
-                    // Continue with other initialization logic
-                    fetchRemoteConfig();
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+            set(ref(Realtimedb, `loggedInUsers/${username}/login_status`), true);
         } else {
             setIsLoading(false);
         }
-    }, [loggedInEmail]);
+
+        if (username) {
+            get(child(ref(Realtimedb), `loggedInUsers/${username}/name`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    setName(snapshot.val());
+                    setIsLoading(false);
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.error("Error getting data:", error);
+            });
+        } else {
+            setIsLoading(false);
+        }
+
+    }, [username]);
+
+    useEffect(() => {
+        const youtubeIframe = document.querySelector('.youtube-iframe');
+        if (youtubeIframe) {
+          youtubeIframe.addEventListener('load', handleIframeLoad);
+        }
+        // Cleanup function to remove event listener on unmount
+        return () => {
+          if (youtubeIframe) {
+            youtubeIframe.removeEventListener('load', handleIframeLoad);
+          }
+        };
+      }, [handleIframeLoad]);
+      
 
     const fetchRemoteConfig = () => {
         const remoteConfig = getRemoteConfig(app);
@@ -88,34 +98,15 @@ function VideoPlayers({ onLogout }) {
             });
     };
 
-    const handleServerChange = (server) => {
-        setActiveServer(server);
-    };
 
-    const handleIframeLoad = () => {
-        setIframeLoaded(true);
-    };
-
-    const handleLogout = () => {
-        const userEmail = loggedInEmail ? loggedInEmail.replace("@miqaat.bhy", "") : null;
-        if (userEmail) {
-            const db = getDatabase();
-            const userRef = ref(db, `loggedInUsers/${userEmail}`);
-
-            // Update the user's login status to false
-            set(userRef, false)
-                .then(() => {
-                    signOut(auth).then(() => {});
-                    onLogout();
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        } else {
-            // User is not logged in, proceed with logout
-            onLogout();
+    const handleLogout = async () => {
+        try {
+          await set(ref(Realtimedb, `/loggedInUsers/${username}/login_status`), false);
+          onLogout();
+        } catch (error) {
+          console.error("Error updating login status:", error);
         }
-    };
+      };
 
     document.addEventListener("contextmenu", (e) => {
         e.preventDefault();
@@ -135,21 +126,25 @@ function VideoPlayers({ onLogout }) {
     };
 
     return (
-        <main>
+        <main className="Video-section">
+            <h3 className="greeting">
+                Salaam,
+            </h3>
             <div className="video-players-header">
                 {isLoading ? (
                     <h3>Loading...</h3>
                 ) : (
-                    <h3>
-                        {loggedInEmail
-                            ? `Logged in as: ${loggedInEmail.replace("@miqaat.bhy", "")}`
-                            : "Not logged in"}
-                    </h3>
+                    <h2>
+                        {username
+                            ? name
+                            : "Not logged in"
+                        }
+                    </h2>
                 )}
-            </div>
             <button id="logout-button" onClick={handleLogout}>
                 Logout
             </button>
+            </div>
             <div className="iframe-container">
                 {/* Server buttons */}
                 <div className="servers">
@@ -180,7 +175,7 @@ function VideoPlayers({ onLogout }) {
                                 <iframe
                                     className="youtube-iframe"
                                     src={videoUrl}
-                                    title=""
+                                    title="Server A"
                                     allowFullScreen
                                     onLoad={handleIframeLoad}
                                 ></iframe>

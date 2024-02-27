@@ -1,6 +1,6 @@
 // auth.js
 export const setAuthData = (user) => {
-    localStorage.setItem("authUser", JSON.stringify(user));
+    localStorage.setItem("authUser", user);
 };
 
 export const getAuthData = () => {
@@ -13,10 +13,10 @@ export const clearAuthData = () => {
 };
 
 // Add the following functions
-export const setStoredUserEmail = (email) => {
-    localStorage.setItem("userEmail", email);
+export const setStoredUsername = (username) => {
+    localStorage.setItem("username", username);
 };
 
-export const getStoredUserEmail = () => {
-    return localStorage.getItem("userEmail");
+export const getStoredUsername = () => {
+    return localStorage.getItem("username");
 };

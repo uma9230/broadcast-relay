@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import "./App.css";
-import Header from "./components/Header";
 import Login from "./components/Login";
 import VideoPlayers from "./components/VideoPlayers";
 import Footer from "./components/Footer";
@@ -11,9 +10,8 @@ function App() {
 
     // Check if the user is already authenticated on app load
     useEffect(() => {
-        const authUser = getAuthData();
-
-        if (authUser) {
+        const authData = getAuthData();
+        if (authData) {
             setIsLoggedIn(true);
         }
     }, []);
@@ -31,9 +29,8 @@ function App() {
 
     return (
         <div className="container">
-            {isLoggedIn && <Header/>}
             <div className="content">
-                {isLoggedIn ? (
+            {isLoggedIn ? (
                     <VideoPlayers onLogout={handleLogout}/>
                 ) : (
                     <>

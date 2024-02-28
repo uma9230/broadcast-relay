@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {getDatabase, onValue, ref, set} from "firebase/database";
+import {onValue, ref, set} from "firebase/database";
 import { doc, getDoc } from "firebase/firestore";
 import "../App.css";
-import {fetchAndActivate, getBoolean, getRemoteConfig} from "firebase/remote-config";
-import {app, db, Realtimedb} from "../firebase";
+import {db, Realtimedb} from "../firebase";
 import Header from "./Header";
 
 function Login({onLogin}) {
@@ -13,19 +12,13 @@ function Login({onLogin}) {
 
     const [isLoginEnabled, setIsLoginEnabled] = useState(true);
 
-    const remoteConfig = getRemoteConfig(app);
-    remoteConfig.settings.minimumFetchIntervalMillis = 100;
-
     useEffect(() => {
-        fetchAndActivate(remoteConfig)
-            .then(() => {
-                const newIsLoginEnabled = getBoolean(remoteConfig, "IS_ENABLED_LOGIN");
-                setIsLoginEnabled(true);
-            })
-            .catch((err) => {
-                console.error(err);
+        const miqaatNameRef = ref(Realtimedb, 'loginStatus');
+            onValue(miqaatNameRef, (snapshot) => {
+                const data = snapshot.val();
+                setIsLoginEnabled(data);
             });
-    }, [remoteConfig]);
+    }, []);
 
     useEffect(() => {
         const loggedInUsersRef = ref(Realtimedb, "loggedInUsers");

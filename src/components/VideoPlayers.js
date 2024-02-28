@@ -1,7 +1,6 @@
-import React,{useEffect, useState} from "react";
-import {fetchAndActivate, getBoolean, getRemoteConfig, getString} from "firebase/remote-config";
-import {app, Realtimedb} from "../firebase";
-import {child, get, ref, set} from "firebase/database";
+import React, { useCallback, useEffect, useState } from "react";
+import { Realtimedb } from "../firebase";
+import { child, get, ref, set, onValue } from "firebase/database";
 import "plyr-react/plyr.css";
 import Plyr from "plyr-react";
 
@@ -16,19 +15,61 @@ function VideoPlayers({ onLogout }) {
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
     const [showPlayer, setShowPlayer] = useState(null);
-    
+
     const handleServerChange = (server) => {
         setActiveServer(server);
     };
+
+    useCallback(() => {
+        if (iframeLoaded) {
+            const iframe = document.querySelector('.youtube-iframe');
+            if (iframe) {
+                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            }
+        }
+    }, [iframeLoaded]);
 
     const handleIframeLoad = () => {
         setIframeLoaded(true);
     };
 
     useEffect(() => {
-        fetchRemoteConfig();
+        const serverARef = ref(Realtimedb, 'serverAStatus');
+            onValue(serverARef, (snapshot) => {
+                const data = snapshot.val();
+                setIsEnabledA(data);
+            });
+
+            const serverBRef = ref(Realtimedb, 'serverBStatus');
+            onValue(serverBRef, (snapshot) => {
+                const data = snapshot.val();
+                setIsEnabledB(data);
+            });
+
+            const serverARefID = ref(Realtimedb, 'serverAID');
+            onValue(serverARefID, (snapshot) => {
+                const data = snapshot.val();
+                setVideoUrl(data);
+            });
+
+            const serverBRefID = ref(Realtimedb, 'serverBID');
+            onValue(serverBRefID, (snapshot) => {
+                const data = snapshot.val();
+                setYoutubeVideoURL(data);
+            });
+
+        if (isEnabledA) {
+            setActiveServer("serverA");
+            setShowPlayer(true);
+        } else if (isEnabledB) {
+            setActiveServer("serverB");
+            setShowPlayer(true);
+        } else {
+            setShowPlayer(false);
+        }
+
         setUsername(localStorage.getItem("authUser"));
-        
+
         if (username) {
             // Update the user's login status in the database
             set(ref(Realtimedb, `loggedInUsers/${username}/login_status`), true);
@@ -51,62 +92,30 @@ function VideoPlayers({ onLogout }) {
             setIsLoading(false);
         }
 
-    }, [username]);
+    }, [isEnabledA, isEnabledB, username]);
 
     useEffect(() => {
         const youtubeIframe = document.querySelector('.youtube-iframe');
         if (youtubeIframe) {
-          youtubeIframe.addEventListener('load', handleIframeLoad);
+            youtubeIframe.addEventListener('load', handleIframeLoad);
         }
         // Cleanup function to remove event listener on unmount
         return () => {
-          if (youtubeIframe) {
-            youtubeIframe.removeEventListener('load', handleIframeLoad);
-          }
+            if (youtubeIframe) {
+                youtubeIframe.removeEventListener('load', handleIframeLoad);
+            }
         };
-      }, [handleIframeLoad]);
-      
-
-    const fetchRemoteConfig = () => {
-        const remoteConfig = getRemoteConfig(app);
-        remoteConfig.settings.minimumFetchIntervalMillis = 100;
-
-        fetchAndActivate(remoteConfig)
-            .then(() => {
-                const newVideoUrl = getString(remoteConfig, "video_url_or_id");
-                const newYoutubeVideoUrl = getString(remoteConfig, "youtube_CHANNEL_NAME");
-                const newIsEnabledA = getBoolean(remoteConfig, "IS_ENABLED_SERVER_A");
-                const newIsEnabledB = getBoolean(remoteConfig, "IS_ENABLED_SERVER_B");
-
-                setVideoUrl(newVideoUrl);
-                setYoutubeVideoURL(newYoutubeVideoUrl);
-                setIsEnabledA(newIsEnabledA);
-                setIsEnabledB(newIsEnabledB);
-                
-                if (newIsEnabledA) {
-                    setActiveServer("serverA");
-                    setShowPlayer(true);
-                } else if (newIsEnabledB) {
-                    setActiveServer("serverB");
-                    setShowPlayer(true);
-                } else {
-                    setShowPlayer(false);
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    };
+    }, [handleIframeLoad]);
 
 
     const handleLogout = async () => {
         try {
-          await set(ref(Realtimedb, `/loggedInUsers/${username}/login_status`), false);
-          onLogout();
+            await set(ref(Realtimedb, `/loggedInUsers/${username}/login_status`), false);
+            onLogout();
         } catch (error) {
-          console.error("Error updating login status:", error);
+            console.error("Error updating login status:", error);
         }
-      };
+    };
 
     document.addEventListener("contextmenu", (e) => {
         e.preventDefault();
@@ -141,61 +150,82 @@ function VideoPlayers({ onLogout }) {
                         }
                     </h2>
                 )}
-            <button id="logout-button" onClick={handleLogout}>
-                Logout
-            </button>
+                <button id="logout-button" onClick={handleLogout}>
+                    Logout
+                </button>
             </div>
             <div className="iframe-container">
                 {/* Server buttons */}
                 <div className="servers">
-                    {/* {isEnabledA && (
-                        <button
-                            className={`serverBtn ${activeServer === "serverA" ? "active" : ""}`}
-                            onClick={() => handleServerChange("serverA")}
-                        >
-                            Server A
-                        </button>
-                    )}
-                    {isEnabledB && (
-                        <button
-                            className={`serverBtn ${activeServer === "serverB" ? "active" : ""}`}
-                            onClick={() => handleServerChange("serverB")}
-                        >
-                            Server B
-                        </button>
-                    )} */}
+                    {
+                        isEnabledA && isEnabledB ? (
+                            <>
+                                <button
+                                    className={`serverBtn ${activeServer === "serverA" ? "active" : ""}`}
+                                    onClick={() => handleServerChange("serverA")}
+                                >
+                                    Server A
+                                </button>
+                                <button
+                                    className={`serverBtn ${activeServer === "serverB" ? "active" : ""}`}
+                                    onClick={() => handleServerChange("serverB")}
+                                >
+                                    Server B
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                {isEnabledA && (
+                                    <button
+                                        className={`serverBtn ${activeServer === "serverA" ? "active" : ""}`}
+                                        onClick={() => handleServerChange("serverA")}
+                                    >
+                                        Server A
+                                    </button>
+                                )}
+                                {isEnabledB && (
+                                    <button
+                                        className={`serverBtn ${activeServer === "serverB" ? "active" : ""}`}
+                                        onClick={() => handleServerChange("serverB")}
+                                    >
+                                        Server B
+                                    </button>
+                                )}
+                            </>
+                        )
+                    }
                 </div>
 
                 {/* Video players */}
-                { showPlayer ? (
+                {showPlayer ? (
                     <div className="video-players">
-                    {activeServer === "serverA" && (
-                        <div className="iframe-wrapper">
-                            <div className="youtube-iframe" style={{ height: "calc(100% - 50px)" }}>
-                                <iframe
-                                    className="youtube-iframe"
-                                    src={videoUrl}
-                                    title="Server A"
-                                    allowFullScreen
-                                    onLoad={handleIframeLoad}
-                                ></iframe>
+                        {activeServer === "serverA" && (
+                            <div className="iframe-wrapper">
+                                <div className="youtube-iframe" style={{ height: "calc(100% - 50px)" }}>
+                                    <iframe
+                                        className="youtube-iframe"
+                                        src={videoUrl}
+                                        title="Server A"
+                                        allowFullScreen
+                                        onLoad={handleIframeLoad}
+                                    ></iframe>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                    {activeServer === "serverB" && (
-                        <div className="iframe-wrapper">
-                            <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
-                                <Plyr {...player} />
+                        )}
+                        {activeServer === "serverB" && (
+                            <div className="iframe-wrapper">
+                                <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
+                                    <Plyr {...player} />
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
                     </div>
                 ) : (
                     <div className="video-players">
                         <h4>Nothing to show</h4>
                     </div>
                 )}
-                
+
             </div>
         </main>
     );

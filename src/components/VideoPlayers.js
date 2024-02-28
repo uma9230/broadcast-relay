@@ -71,13 +71,6 @@ function VideoPlayers({ onLogout }) {
         setUsername(localStorage.getItem("authUser"));
 
         if (username) {
-            // Update the user's login status in the database
-            set(ref(Realtimedb, `loggedInUsers/${username}/login_status`), true);
-        } else {
-            setIsLoading(false);
-        }
-
-        if (username) {
             get(child(ref(Realtimedb), `loggedInUsers/${username}/name`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     setName(snapshot.val());
@@ -92,7 +85,15 @@ function VideoPlayers({ onLogout }) {
             setIsLoading(false);
         }
 
-    }, [isEnabledA, isEnabledB, username]);
+        const loggedInUsersRef = ref(Realtimedb, `loggedInUsers/${username}/login_status`);
+        onValue(loggedInUsersRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data === false) {
+                onLogout();
+            }
+        });
+
+    }, [isEnabledA, isEnabledB, username, onLogout]);
 
     useEffect(() => {
         const youtubeIframe = document.querySelector('.youtube-iframe');

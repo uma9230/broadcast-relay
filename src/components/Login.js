@@ -13,6 +13,13 @@ function Login({onLogin}) {
     const [isLoginEnabled, setIsLoginEnabled] = useState(true);
 
     useEffect(() => {
+        fetchAndActivate(remoteConfig)
+            .then(() => {
+                const newIsLoginEnabled = getBoolean(remoteConfig, "IS_ENABLED_LOGIN");
+                setIsLoginEnabled(newIsLoginEnabled);
+            })
+            .catch((err) => {
+                console.error(err);
         const miqaatNameRef = ref(Realtimedb, 'loginStatus');
             onValue(miqaatNameRef, (snapshot) => {
                 const data = snapshot.val();

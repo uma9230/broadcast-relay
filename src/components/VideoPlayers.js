@@ -7,10 +7,12 @@ import Plyr from "plyr-react";
 function VideoPlayers({ onLogout }) {
     const [videoUrl, setVideoUrl] = useState("");
     const [youtubeVideoURL, setYoutubeVideoURL] = useState("");
+    const [driveURL, setDriveURL] = useState("");
     const [activeServer, setActiveServer] = useState("");
     const [iframeLoaded, setIframeLoaded] = useState(false);
     const [isEnabledA, setIsEnabledA] = useState(true);
     const [isEnabledB, setIsEnabledB] = useState(true);
+    const [isEnabledC, setIsEnabledC] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
@@ -46,6 +48,12 @@ function VideoPlayers({ onLogout }) {
                 setIsEnabledB(data);
             });
 
+            const serverCRef = ref(Realtimedb, 'serverCStatus');
+            onValue(serverCRef, (snapshot) => {
+                const data = snapshot.val();
+                setIsEnabledC(data);
+            });
+
             const serverARefID = ref(Realtimedb, 'serverAID');
             onValue(serverARefID, (snapshot) => {
                 const data = snapshot.val();
@@ -58,11 +66,20 @@ function VideoPlayers({ onLogout }) {
                 setYoutubeVideoURL(data);
             });
 
+            const serverCRefID = ref(Realtimedb, 'serverCID');
+            onValue(serverCRefID, (snapshot) => {
+                const data = snapshot.val();
+                setDriveURL(data);
+            });
+
         if (isEnabledA) {
             setActiveServer("serverA");
             setShowPlayer(true);
         } else if (isEnabledB) {
             setActiveServer("serverB");
+            setShowPlayer(true);
+        } else if (isEnabledC) {
+            setActiveServer("serverC");
             setShowPlayer(true);
         } else {
             setShowPlayer(false);
@@ -93,7 +110,7 @@ function VideoPlayers({ onLogout }) {
             }
         });
 
-    }, [isEnabledA, isEnabledB, username, onLogout]);
+    }, [isEnabledA, isEnabledB, isEnabledC, username, onLogout]);
 
     useEffect(() => {
         const youtubeIframe = document.querySelector('.youtube-iframe');
@@ -159,22 +176,7 @@ function VideoPlayers({ onLogout }) {
                 {/* Server buttons */}
                 <div className="servers">
                     {
-                        isEnabledA && isEnabledB ? (
-                            <>
-                                <button
-                                    className={`serverBtn ${activeServer === "serverA" ? "active" : ""}`}
-                                    onClick={() => handleServerChange("serverA")}
-                                >
-                                    Server A
-                                </button>
-                                <button
-                                    className={`serverBtn ${activeServer === "serverB" ? "active" : ""}`}
-                                    onClick={() => handleServerChange("serverB")}
-                                >
-                                    Server B
-                                </button>
-                            </>
-                        ) : (
+                        !isLoading ? (
                             <>
                                 {isEnabledA && (
                                     <button
@@ -192,7 +194,17 @@ function VideoPlayers({ onLogout }) {
                                         Server B
                                     </button>
                                 )}
+                                {isEnabledC && (
+                                    <button
+                                        className={`serverBtn ${activeServer === "serverC" ? "active" : ""}`}
+                                        onClick={() => handleServerChange("serverC")}
+                                    >
+                                        Server C
+                                    </button>
+                                )}
                             </>
+                        ) : (
+                            <h3>Loading...</h3>
                         )
                     }
                 </div>
@@ -202,9 +214,9 @@ function VideoPlayers({ onLogout }) {
                     <div className="video-players">
                         {activeServer === "serverA" && (
                             <div className="iframe-wrapper">
-                                <div className="youtube-iframe" style={{ height: "calc(100% - 50px)" }}>
+                                <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
                                     <iframe
-                                        className="youtube-iframe"
+                                        className="twitch-iframe"
                                         src={videoUrl}
                                         title="Server A"
                                         allowFullScreen
@@ -217,6 +229,21 @@ function VideoPlayers({ onLogout }) {
                             <div className="iframe-wrapper">
                                 <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
                                     <Plyr {...player} />
+                                </div>
+                            </div>
+                        )}
+                        {activeServer === "serverC" && (
+                            <div className="iframe-wrapper">
+                                <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
+                                    <iframe
+                                        className="twitch-iframe"
+                                        src={`https://drive.google.com/file/d/${driveURL}/preview`} 
+                                        title="Server C"
+                                        allowFullScreen
+                                        seamless=""
+                                        sandbox="allow-same-origin allow-scripts"
+                                        allow="autoplay"
+                                    ></iframe>
                                 </div>
                             </div>
                         )}

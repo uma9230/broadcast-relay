@@ -20,9 +20,9 @@ function Header() {
 
     return (
         <header>
-            <img src="https://www.its52.com/imgs/Logos/Logo_Bhayendar_West.png" alt="Anjuman-e-Badri Logo" className="logo" />
-            <h1>Anjuman - e - Badri</h1>
-            <h2>Bhayander West Relay</h2>
+            <img src="https://yt3.googleusercontent.com/fkBqLGX5E_WMfwO62pXX4bEd3U7StuUF9oTtgfxTj5q-dqFzQaTR8XKMVcp8en_ICcs1xbbWGQ=s176-c-k-c0x00ffffff-no-rj" alt="Anjuman-e-Badri Logo" className="logo" />
+            <h1>Mxnu YT</h1>
+            <h2>Mumbai</h2>
             <h2>{`${miqaatName}`}</h2>
         </header>
     );

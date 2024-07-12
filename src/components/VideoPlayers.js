@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Realtimedb } from "../firebase";
-import { child, get, ref, set, onValue } from "firebase/database";
+import React, {useCallback, useEffect, useState} from "react";
+import {Realtimedb} from "../firebase";
+import {child, get, onValue, ref, set} from "firebase/database";
 import "plyr-react/plyr.css";
-import Plyr from "plyr-react";
 
 function VideoPlayers({ onLogout }) {
     const [videoUrl, setVideoUrl] = useState("");
@@ -228,7 +227,13 @@ function VideoPlayers({ onLogout }) {
                         {activeServer === "serverB" && (
                             <div className="iframe-wrapper">
                                 <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
-                                    <Plyr {...player} />
+                                    <video
+                                        className="twitch-iframe"
+                                        src={`https://ythls-v3.onrender.com/video/${youtubeVideoURL}.m3u8`}
+                                        title="Server B"
+                                        allowFullScreen
+                                        onLoad={handleIframeLoad}
+                                    ></video>
                                 </div>
                             </div>
                         )}

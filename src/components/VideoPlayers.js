@@ -1,8 +1,7 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Realtimedb} from "../firebase";
 import {child, get, onValue, ref, set} from "firebase/database";
 import "plyr-react/plyr.css";
-import Hls from "hls.js";
 
 function VideoPlayers({ onLogout }) {
     const [videoUrl, setVideoUrl] = useState("");
@@ -17,8 +16,6 @@ function VideoPlayers({ onLogout }) {
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
     const [showPlayer, setShowPlayer] = useState(null);
-
-    const videoRef = useRef(null);
 
     const handleServerChange = (server) => {
         setActiveServer(server);
@@ -112,22 +109,7 @@ function VideoPlayers({ onLogout }) {
             }
         });
 
-        const video = videoRef.current;
-
-        if (video && Hls.isSupported() && activeServer === "serverB") {
-            const hls = new Hls();
-            hls.loadSource(`https://ythls-v3.onrender.com/video/${youtubeVideoURL}.m3u8`);
-            hls.attachMedia(video);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-
-            return () => {
-                if (hls) {
-                    hls.destroy(); // Clean up HLS instance
-                }
-            };
-        }
-
-    }, [isEnabledA, isEnabledB, isEnabledC, username, onLogout, activeServer, youtubeVideoURL]);
+    }, [isEnabledA, isEnabledB, isEnabledC, username, onLogout]);
 
     useEffect(() => {
         const youtubeIframe = document.querySelector('.youtube-iframe');
@@ -245,10 +227,11 @@ function VideoPlayers({ onLogout }) {
                         {activeServer === "serverB" && (
                             <div className="iframe-wrapper">
                                 <div className="twitch-iframe" style={{height: "calc(100% - 50px)"}}>
-                                    <video
-                                        ref={videoRef}
-                                        controls
-                                        autoPlay
+                                    <iframe
+                                        src={`https://anym3u8player.com/tv/video-player.php?url=https%3A%2F%2Fworker-damp-poetry-68b1.1doi3.workers.dev%2Fhttp%3A%2F%2Fythls-v3.onrender.com%2Fvideo%2F${youtubeVideoURL}.m3u8`}
+                                        title="Server B"
+                                        allowFullScreen
+                                        onLoad={handleIframeLoad}
                                         className="twitch-iframe"
                                     />
                                 </div>
@@ -256,10 +239,10 @@ function VideoPlayers({ onLogout }) {
                         )}
                         {activeServer === "serverC" && (
                             <div className="iframe-wrapper">
-                                <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
+                                <div className="twitch-iframe" style={{height: "calc(100% - 50px)"}}>
                                     <iframe
                                         className="twitch-iframe"
-                                        src={`https://drive.google.com/file/d/${driveURL}/preview`} 
+                                        src={`https://drive.google.com/file/d/${driveURL}/preview`}
                                         title="Server C"
                                         allowFullScreen
                                         seamless=""

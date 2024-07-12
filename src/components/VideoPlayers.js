@@ -1,7 +1,8 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {Realtimedb} from "../firebase";
 import {child, get, onValue, ref, set} from "firebase/database";
 import "plyr-react/plyr.css";
+import Hls from "hls.js";
 
 function VideoPlayers({ onLogout }) {
     const [videoUrl, setVideoUrl] = useState("");
@@ -16,6 +17,8 @@ function VideoPlayers({ onLogout }) {
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
     const [showPlayer, setShowPlayer] = useState(null);
+
+    const videoRef = useRef(null);
 
     const handleServerChange = (server) => {
         setActiveServer(server);
@@ -109,7 +112,22 @@ function VideoPlayers({ onLogout }) {
             }
         });
 
-    }, [isEnabledA, isEnabledB, isEnabledC, username, onLogout]);
+        const video = videoRef.current;
+
+        if (video && Hls.isSupported() && activeServer === "serverB") {
+            const hls = new Hls();
+            hls.loadSource(`https://ythls-v3.onrender.com/video/${youtubeVideoURL}.m3u8`);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
+
+            return () => {
+                if (hls) {
+                    hls.destroy(); // Clean up HLS instance
+                }
+            };
+        }
+
+    }, [isEnabledA, isEnabledB, isEnabledC, username, onLogout, activeServer, youtubeVideoURL]);
 
     useEffect(() => {
         const youtubeIframe = document.querySelector('.youtube-iframe');
@@ -226,14 +244,13 @@ function VideoPlayers({ onLogout }) {
                         )}
                         {activeServer === "serverB" && (
                             <div className="iframe-wrapper">
-                                <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
+                                <div className="twitch-iframe" style={{height: "calc(100% - 50px)"}}>
                                     <video
+                                        ref={videoRef}
+                                        controls
+                                        autoPlay
                                         className="twitch-iframe"
-                                        src={`https://ythls-v3.onrender.com/video/${youtubeVideoURL}.m3u8`}
-                                        title="Server B"
-                                        allowFullScreen
-                                        onLoad={handleIframeLoad}
-                                    ></video>
+                                    />
                                 </div>
                             </div>
                         )}

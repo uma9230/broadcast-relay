@@ -2,9 +2,11 @@ import React, {useCallback, useEffect, useState} from "react";
 import {Realtimedb} from "../firebase";
 import {child, get, onValue, ref, set} from "firebase/database";
 import "plyr-react/plyr.css";
+import Plyr from "plyr-react";
 
 function VideoPlayers({ onLogout }) {
     const [videoUrl, setVideoUrl] = useState("");
+    const [youtubeLiveURL, setYoutubeLiveURL] = useState("");
     const [youtubeVideoURL, setYoutubeVideoURL] = useState("");
     const [driveURL, setDriveURL] = useState("");
     const [activeServer, setActiveServer] = useState("");
@@ -12,6 +14,7 @@ function VideoPlayers({ onLogout }) {
     const [isEnabledA, setIsEnabledA] = useState(true);
     const [isEnabledB, setIsEnabledB] = useState(true);
     const [isEnabledC, setIsEnabledC] = useState(true);
+    const [isEnabledD, setIsEnabledD] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
@@ -53,6 +56,12 @@ function VideoPlayers({ onLogout }) {
                 setIsEnabledC(data);
             });
 
+            const serverDRef = ref(Realtimedb, 'serverDStatus');
+            onValue(serverDRef, (snapshot) => {
+                const data = snapshot.val();
+                setIsEnabledD(data);
+            });
+
             const serverARefID = ref(Realtimedb, 'serverAID');
             onValue(serverARefID, (snapshot) => {
                 const data = snapshot.val();
@@ -62,13 +71,19 @@ function VideoPlayers({ onLogout }) {
             const serverBRefID = ref(Realtimedb, 'serverBID');
             onValue(serverBRefID, (snapshot) => {
                 const data = snapshot.val();
-                setYoutubeVideoURL(data);
+                setYoutubeLiveURL(data);
             });
 
             const serverCRefID = ref(Realtimedb, 'serverCID');
             onValue(serverCRefID, (snapshot) => {
                 const data = snapshot.val();
                 setDriveURL(data);
+            });
+
+            const serverDRefID = ref(Realtimedb, 'serverDID');
+            onValue(serverDRefID, (snapshot) => {
+                const data = snapshot.val();
+                setYoutubeVideoURL(data);
             });
 
         if (isEnabledA) {
@@ -79,6 +94,9 @@ function VideoPlayers({ onLogout }) {
             setShowPlayer(true);
         } else if (isEnabledC) {
             setActiveServer("serverC");
+            setShowPlayer(true);
+        } else if (isEnabledD) {
+            setActiveServer("serverD");
             setShowPlayer(true);
         } else {
             setShowPlayer(false);
@@ -109,7 +127,7 @@ function VideoPlayers({ onLogout }) {
             }
         });
 
-    }, [isEnabledA, isEnabledB, isEnabledC, username, onLogout]);
+    }, [isEnabledA, isEnabledB, isEnabledC, isEnabledD, username, onLogout]);
 
     useEffect(() => {
         const youtubeIframe = document.querySelector('.youtube-iframe');
@@ -143,7 +161,7 @@ function VideoPlayers({ onLogout }) {
             type: "video",
             sources: [
                 {
-                    src: `https://www.youtube.com/watch?v=${youtubeVideoURL}`,
+                    src: `https://www.youtube.com/embed/${youtubeVideoURL}?rel=0`,
                     provider: "youtube",
                 },
             ],
@@ -201,6 +219,14 @@ function VideoPlayers({ onLogout }) {
                                         Server C
                                     </button>
                                 )}
+                                {isEnabledD && (
+                                    <button
+                                        className={`serverBtn ${activeServer === "serverD" ? "active" : ""}`}
+                                        onClick={() => handleServerChange("serverD")}
+                                    >
+                                        Server D
+                                    </button>
+                                )}
                             </>
                         ) : (
                             <h3>Loading...</h3>
@@ -228,7 +254,7 @@ function VideoPlayers({ onLogout }) {
                             <div className="iframe-wrapper">
                                 <div className="twitch-iframe" style={{height: "calc(100% - 50px)"}}>
                                     <iframe
-                                        src={`https://anym3u8player.com/tv/video-player.php?url=https%3A%2F%2Fworker-damp-poetry-68b1.1doi3.workers.dev%2Fhttp%3A%2F%2Fythls-v3.onrender.com%2Fvideo%2F${youtubeVideoURL}.m3u8`}
+                                        src={`https://anym3u8player.com/tv/video-player.php?url=https%3A%2F%2Fworker-damp-poetry-68b1.1doi3.workers.dev%2Fhttp%3A%2F%2Fythls-v3.onrender.com%2Fvideo%2F${youtubeLiveURL}.m3u8`}
                                         title="Server B"
                                         allowFullScreen
                                         onLoad={handleIframeLoad}
@@ -249,6 +275,13 @@ function VideoPlayers({ onLogout }) {
                                         sandbox="allow-same-origin allow-scripts"
                                         allow="autoplay"
                                     ></iframe>
+                                </div>
+                            </div>
+                        )}
+                        {activeServer === "serverD" && (
+                            <div className="iframe-wrapper">
+                                <div className="twitch-iframe" style={{height: "calc(100% - 50px)"}}>
+                                    <Plyr {...player} />
                                 </div>
                             </div>
                         )}

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {onValue, ref, set} from "firebase/database";
-import { doc, getDoc } from "firebase/firestore";
+import {doc, getDoc} from "firebase/firestore";
 import "../App.css";
 import {db, Realtimedb} from "../firebase";
 import Header from "./Header";
@@ -96,7 +96,7 @@ function Login({onLogin}) {
                             <input
                                 className={"inputs"}
                                 type="text"
-                                placeholder="ITS"
+                                placeholder="username"
                                 maxLength={8}
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
@@ -104,7 +104,7 @@ function Login({onLogin}) {
                             <input
                                 className={"inputs"}
                                 type="password"
-                                placeholder="Password"
+                                placeholder="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
@@ -114,7 +114,7 @@ function Login({onLogin}) {
                         <>
                             <p>Login is currently disabled.</p>
                             <hr></hr>
-                            <p>Login will start 30 mins before the relay.</p>
+                            <p>Login will start 30 mins before the broadcast.</p>
                         </>
                     )}
                 </form>

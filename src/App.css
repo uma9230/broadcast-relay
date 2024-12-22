@@ -1,7 +1,7 @@
 :root {
-    --background: url("https://wallpapercave.com/wp/wp7786298.jpg");
-    --primary: #3498db;
-    --secondary: #696969;
+    --background: url("bg.jpg") no-repeat center center fixed;
+    --primary: rgba(0, 143, 145, 0.52);
+    --secondary: #008f91;
     --tertiary: #e74c3c;
     --quaternary: #34495e;
     --quinary: #ecf0f1;
@@ -79,16 +79,16 @@ h3 {
 }
 
 h1, h2, h3 {
-    color: #545454;
+    color: #08f9fd;
 }
 .footer_text_h3 {
-    color: #545454;
+    color: rgb(237, 139, 202);
     font-size: 1.2rem;
     margin-bottom: 20px;
 }
 
 .footer_text_p {
-    color: #545454;
+    color: #ed8bca;
     font-size: 0.7rem;
     margin-bottom: 20px;
 }
@@ -104,7 +104,7 @@ h1, h2, h3 {
 iframe {
     display: block;
     border: none;
-    box-shadow: 0 0 10px rgba(200, 200, 200, 0.8);
+    box-shadow: 0 0 10px rgba(8, 249, 253, 0.66);
 }
 
 .greeting {
@@ -112,8 +112,8 @@ iframe {
     flex-direction: column;
     justify-content: center;
     align-items: start;
-    margin: 0;
-    color: #9c9c9c;
+    margin: 20px 0;
+    color: #ed8bca;
 }
 
 .video-players-header {
@@ -180,8 +180,8 @@ iframe {
     padding: 10px;
     border: 2px solid var(--secondary);
     border-radius: 10px;
-    background: var(--background);
-    color: #545455;
+    background: #fff;
+    color: #008f91;
     text-align: center;
     font-size: 1.5rem;
 }
@@ -195,11 +195,11 @@ iframe {
     border-radius: 10px;
     cursor: pointer;
     font-size: 1.5rem;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.1s ease-in-out;
 }
 
 .login-btn:hover {
-    background-color: #9c9c9c;
+    background-color: rgba(0, 143, 145, 0.52);
 }
 
 .error-message {
@@ -217,8 +217,6 @@ iframe {
     cursor: pointer;
     font-size: 16px;
     transition: all 0.3s ease-in-out;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
-                -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
 
 #logout-button:hover {
@@ -242,8 +240,6 @@ iframe {
     border-radius: 30px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1),
-                -5px -5px 10px rgba(255, 255, 255, 0.5);
 }
 
 .serverBtn:active {
@@ -256,13 +252,11 @@ iframe {
 
 @media screen and (max-width: 768px) {
     .footer_text_h3 {
-        color: #9c9c9c;
         font-size: 1.2rem;
         margin-bottom: 20px;
     }
 
     .footer_text_p {
-        color: #9c9c9c;
         font-size: 0.7rem;
         margin-bottom: 20px;
     }
@@ -275,7 +269,6 @@ iframe {
         align-items: center;
         backdrop-filter: blur(5px);
         border-radius: 10px;
-        border: 1px solid var(--glass-border);
         background-clip: padding-box;
     }
 

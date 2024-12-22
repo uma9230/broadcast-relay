@@ -172,7 +172,7 @@ function VideoPlayers({ onLogout }) {
     return (
         <main className="Video-section">
             <h3 className="greeting">
-                Salaam,
+                Welcome,
             </h3>
             <div className="video-players-header">
                 {isLoading ? (

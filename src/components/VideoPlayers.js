@@ -161,7 +161,7 @@ function VideoPlayers({ onLogout }) {
             type: "video",
             sources: [
                 {
-                    src: `https://www.youtube.com/embed/${youtubeVideoURL}?rel=0`,
+                    src: youtubeVideoURL,
                     provider: "youtube",
                 },
             ],
@@ -171,24 +171,18 @@ function VideoPlayers({ onLogout }) {
 
     return (
         <main className="Video-section">
-            <h3 className="greeting">
-                Welcome,
-            </h3>
-            <div className="video-players-header">
-                {isLoading ? (
-                    <h3>Loading...</h3>
-                ) : (
-                    <h2>
-                        {username
-                            ? name
-                            : "Not logged in"
-                        }
-                    </h2>
-                )}
-                <button id="logout-button" onClick={handleLogout}>
-                    Logout
-                </button>
-            </div>
+           <div className="video-players-header">
+    {isLoading ? (
+        <h3>Loading...</h3>
+    ) : (
+        <h3 className="greeting-name">
+            Welcome,&nbsp;<span className="username">{username ? name : "Not logged in"}</span>
+        </h3>
+    )}
+    <button id="logout-button" onClick={handleLogout}>
+        Logout
+    </button>
+</div>
             <div className="iframe-container">
                 {/* Server buttons */}
                 <div className="servers">

@@ -1,11 +1,15 @@
 :root {
-    --background: url("bg.jpg") no-repeat center center fixed;
-    --primary: rgba(0, 143, 145, 0.52);
-    --secondary: #008f91;
-    --tertiary: #e74c3c;
-    --quaternary: #34495e;
-    --quinary: #ecf0f1;
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --background: linear-gradient(135deg, #6B8CAE, #1B3C59);
+    --primary: rgba(107, 140, 174, 0.52);
+    --secondary: #6B8CAE;
+    --tertiary: #1B3C59;
+    --quaternary: #9DBCD4;
+    --quinary: #D5E5F2;
+    --glass-border: rgba(213, 229, 242, 0.3);
+    --neon-glow: 0 0 10px rgba(107, 140, 174, 0.5);
+    --magical-gradient: linear-gradient(135deg, rgba(213, 229, 242, 0.2), rgba(107, 140, 174, 0.2));
+    --shadow-soft: 0 4px 12px rgba(91, 142, 177, 0.4);   /* For buttons */
+    --shadow-deep: 0 6px 18px rgba(91, 142, 177, 0.35);  /* For video player */
 }
 
 body {
@@ -16,272 +20,247 @@ body {
     align-items: center;
     min-height: 100vh;
     background: var(--background);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
     color: #fff;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .container {
     text-align: center;
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 800px;
-    padding: 0 20px;
+    max-width: 1200px;  /* Increased from 800px */
+    padding: 20px;
     margin: 50px auto;
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
     border: 1px solid var(--glass-border);
-    background-clip: padding-box;
+    background: var(--magical-gradient);
+    box-shadow: var(--neon-glow);
+    animation: containerGlow 3s infinite alternate;
 }
 
-@media screen and (max-width: 768px) {
-    .container {
-        backdrop-filter: blur(5px);
+@keyframes containerGlow {
+    from {
+        box-shadow: 0 0 10px rgba(98, 0, 255, 0.3);
+    }
+    to {
+        box-shadow: 0 0 20px rgba(255, 51, 102, 0.5);
     }
 }
 
-.content {
+.login-form {
+    padding: 30px 50px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
+    max-width: 400px;
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    border: 1px solid var(--glass-border);
+    background: rgba(213, 229, 242, 0.25);
+    box-shadow: 0 0 20px rgba(107, 140, 174, 0.2);
+    transform: translateY(0);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.logo {
-    width: 50%;
-    max-width: 300px;
-    margin: 0 auto;
+.login-form:hover {
+    transform: translateY(-5px);
+    background: rgba(213, 229, 242, 0.3);
+    box-shadow: 0 0 25px rgba(107, 140, 174, 0.3);
 }
 
-header {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-h1 {
-    font-size: 2.5rem;
-    padding-right: 20px;
-}
-
-h2 {
-    font-size: 1.5rem;
-}
-
-h3 {
+.inputs {
+    width: 100%;
+    margin: 15px 0;
+    padding: 12px;
+    border: 2px solid #6B8CAE;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--secondary);
+    text-align: center;
     font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.inputs:focus {
+    outline: none;
+    border-color: #1e65d0;
+    box-shadow: 0 0 10px rgba(41, 128, 255, 0.3);
+}
+
+.login-btn {
+    width: 60%;
+    padding: 12px;
+    background: linear-gradient(45deg, var(--secondary), var(--tertiary));
+    color: #fff;
+    border: none;
+    margin: 20px 0;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.login-btn:hover {
+    transform: scale(1.05);
 }
 
 h1, h2, h3 {
-    color: #08f9fd;
-}
-.footer_text_h3 {
-    color: rgb(237, 139, 202);
-    font-size: 1.2rem;
-    margin-bottom: 20px;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(41, 128, 255, 0.5);
 }
 
-.footer_text_p {
-    color: #ed8bca;
-    font-size: 0.7rem;
-    margin-bottom: 20px;
+.greeting-name {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(41, 128, 255, 0.5);
 }
 
-.video-player-header-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 50px;
-}
-
-iframe {
-    display: block;
+.serverBtn {
+    padding: 12px 25px;
+    background: linear-gradient(45deg, var(--secondary), var(--tertiary));
+    color: #fff;
     border: none;
-    box-shadow: 0 0 10px rgba(8, 249, 253, 0.66);
+    margin: 0 10px 20px 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.greeting {
+.serverBtn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(91, 142, 177, 0.6); /* Matches your palette */
+    background: linear-gradient(45deg, var(--quinary), var(--secondary));
+}
+
+
+#logout-button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    background: linear-gradient(45deg, var(--secondary), var(--tertiary));
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 0 10px rgba(107, 140, 174, 0.3);
+    transition: all 0.3s ease;
+}
+
+#logout-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(107, 140, 174, 0.7);
+    background: linear-gradient(45deg, var(--tertiary), var(--secondary));
+}
+
+@keyframes containerGlow {
+    from {
+        box-shadow: 0 0 10px rgba(41, 128, 255, 0.3);
+    }
+    to {
+        box-shadow: 0 0 20px rgba(41, 128, 255, 0.5);
+    }
+}
+
+.iframe-wrapper {
+    width: 90vw;  /* Increased from 80vw */
+    max-width: 1000px;  /* Increased from 650px */
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: start;
-    margin: 20px 0;
-    color: #ed8bca;
+    align-items: center;
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: var(--neon-glow);
+    transition: all 0.3s ease;
+    overflow: hidden;
 }
 
-.video-players-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 15px;
-    align-items: center;
-    margin: 0;
+.iframe-wrapper:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow-deep);
+    background: rgba(213, 229, 242, 0.15); /* soft glow effect */
 }
+
 
 .twitch-iframe, .youtube-iframe {
     width: 100%;
     aspect-ratio: 16 / 9;
-    max-height: 60vh;
+    max-height: 70vh;  /* Increased from 60vh */
 }
 
-.iframe-wrapper {
-    width: 80vw;
-    max-width: 650px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px);
-    border-radius: 10px;
-    border: 1px solid var(--glass-border);
-    background-clip: padding-box;
-}
-
-.iframe-container {
-    display: block;
-    z-index: 0;
-}
-
-/* Login Form Styles */
-
-.login-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin-top: 50px;
-}
-
-.login-form {
-    padding: 20px 40px;
+.video-players-header {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.greeting-name {
+    font-size: 1.5rem;
+    font-weight: 500;
+    display: flex;
     justify-content: center;
     align-items: center;
-    width: 100vw;
-    color: #656565;
-    max-width: 300px;
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    border: 1px solid var(--glass-border);
-    background-clip: padding-box;
 }
 
-
-.inputs {
-    width: 100%;
-    margin: 10px 0;
-    padding: 10px;
-    border: 2px solid var(--secondary);
-    border-radius: 10px;
-    background: #fff;
-    color: #008f91;
-    text-align: center;
-    font-size: 1.5rem;
-}
-.login-btn {
-    width: 50%;
-    padding: 10px;
-    background-color: var(--secondary);
-    color: #fff;
-    border: none;
-    margin: 20px 0;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 1.5rem;
-    transition: all 0.1s ease-in-out;
+.username {
+    font-weight: bold;
+    margin-left: 5px;    
 }
 
-.login-btn:hover {
-    background-color: rgba(0, 143, 145, 0.52);
-}
-
-.error-message {
-    color: #e74c3c;
-    margin-bottom: 50px;
-}
-
-#logout-button {
-    background-color: var(--tertiary);
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    width: 100px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.3s ease-in-out;
-}
-
-#logout-button:hover {
-    background-color: #c0392b;
-}
-
-/* Server Buttons Styles */
 .servers {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 20px;
-}
-
-.serverBtn {
-    padding: 10px 20px;
-    background-color: var(--secondary);
-    color: #fff;
-    border: none;
-    margin: 0 10px 20px 10px;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
-
-.serverBtn:active {
-    background-color: var(--primary);
-}
-
-.serverBtn:hover {
-    background-color: var(--primary);
+    width: 90%;  /* Added width */
+    max-width: 1000px;  /* Added max-width */
+    flex-wrap: wrap;  /* Added flex-wrap */
 }
 
 @media screen and (max-width: 768px) {
-    .footer_text_h3 {
-        font-size: 1.2rem;
-        margin-bottom: 20px;
+    .container {
+        backdrop-filter: blur(10px);
+        padding: 15px;
+        max-width: 95vw;  /* Added max-width */
     }
-
-    .footer_text_p {
-        font-size: 0.7rem;
-        margin-bottom: 20px;
-    }
-
+    
     .iframe-wrapper {
-        width: 80vw;
-        max-width: 650px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        backdrop-filter: blur(5px);
-        border-radius: 10px;
-        background-clip: padding-box;
+        width: 95vw;  /* Increased from 80vw */
     }
-
-    footer {
-        margin-top: 100px;
+    
+    .video-players-header {
+        width: 95%;  /* Adjusted for mobile */
     }
-    .logo{
-        width: 30%;
-        max-width: 300px;
-        margin: 0 auto;
-    }
-
-    .login-container {
-        flex-direction: column;
+    
+    .servers {
+        width: 95%;  /* Adjusted for mobile */
     }
 }

@@ -96,7 +96,7 @@ function Login({onLogin}) {
                             <input
                                 className={"inputs"}
                                 type="text"
-                                placeholder="username"
+                                placeholder="Username"
                                 maxLength={8}
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
@@ -104,7 +104,7 @@ function Login({onLogin}) {
                             <input
                                 className={"inputs"}
                                 type="password"
-                                placeholder="password"
+                                placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />

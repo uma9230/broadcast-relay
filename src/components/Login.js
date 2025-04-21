@@ -12,6 +12,8 @@ function Login({onLogin}) {
 
     const [isLoginEnabled, setIsLoginEnabled] = useState(true);
     const [rememberMe, setRememberMe] = useState(false);
+    const [showForgotModal, setShowForgotModal] = useState(false);
+
 
     useEffect(() => {
         const loginStatRef = ref(Realtimedb, 'loginStatus');
@@ -134,7 +136,7 @@ function Login({onLogin}) {
                                     />
                                     Remember Me
                                 </label>
-                                <a href="#" className="forgot-password">Forgot Password?</a>
+                                <a href="#" onClick={() => setShowForgotModal(true)} className="forgot-password">Forgot Password?</a>
                             </div>
     
                             <button className="login-btn" type="submit">Login</button>
@@ -149,6 +151,17 @@ function Login({onLogin}) {
                 </form>
                 <p id="login-error" className="error-message"></p>
             </div>
+            {showForgotModal && (
+                <div className="modal-overlay" onClick={() => setShowForgotModal(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h2>Password Reset</h2>
+                        <p>Please contact the admin to reset your password.</p>
+                        <button onClick={() => setShowForgotModal(false)} className="login-btn">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );    
     

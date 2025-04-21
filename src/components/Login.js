@@ -11,6 +11,7 @@ function Login({onLogin}) {
     const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
 
     const [isLoginEnabled, setIsLoginEnabled] = useState(true);
+    const [rememberMe, setRememberMe] = useState(false);
 
     useEffect(() => {
         const loginStatRef = ref(Realtimedb, 'loginStatus');
@@ -43,6 +44,15 @@ function Login({onLogin}) {
         });
     }, [username]);
 
+    useEffect(() => {
+        const savedUsername = localStorage.getItem('rememberedUsername');
+        if (savedUsername) {
+            setUsername(savedUsername);
+            setRememberMe(true);
+        }
+    }, []);
+    
+
     const updateLoginStatus = (username, isLoggedIn, user) => {
         set(ref(Realtimedb, `loggedInUsers/${username}/login_status`), isLoggedIn)
         set(ref(Realtimedb, `loggedInUsers/${username}/login_time`), new Date().toLocaleString())
@@ -52,6 +62,12 @@ function Login({onLogin}) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (rememberMe) {
+            localStorage.setItem('rememberedUsername', username);
+        } else {
+            localStorage.removeItem('rememberedUsername');
+        }
+        
         if (!username || !password) {
             const loginError = document.getElementById("login-error");
             loginError.innerHTML = "Please enter a username and password.";
@@ -87,14 +103,14 @@ function Login({onLogin}) {
 
     return (
         <div className="login-container">
-            <Header/>
+            <Header />
             <div className="login-form">
                 <h1>Login</h1>
                 <form onSubmit={handleSubmit}>
                     {isLoginEnabled ? (
                         <>
                             <input
-                                className={"inputs"}
+                                className="inputs"
                                 type="text"
                                 placeholder="Username"
                                 maxLength={8}
@@ -102,25 +118,39 @@ function Login({onLogin}) {
                                 onChange={(e) => setUsername(e.target.value)}
                             />
                             <input
-                                className={"inputs"}
+                                className="inputs"
                                 type="password"
                                 placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
-                            <button className={"login-btn"} type="submit">Login</button>
+    
+                            <div className="login-options">
+                                <label className="remember-me">
+                                    <input
+                                        type="checkbox"
+                                        checked={rememberMe}
+                                        onChange={(e) => setRememberMe(e.target.checked)}
+                                    />
+                                    Remember Me
+                                </label>
+                                <a href="#" className="forgot-password">Forgot Password?</a>
+                            </div>
+    
+                            <button className="login-btn" type="submit">Login</button>
                         </>
                     ) : (
-                        <>
+                        <div className="login-disabled-box">
                             <p>Login is currently disabled.</p>
-                            <hr></hr>
+                            <hr />
                             <p>Login will start 30 mins before the broadcast.</p>
-                        </>
+                        </div>
                     )}
                 </form>
                 <p id="login-error" className="error-message"></p>
             </div>
         </div>
-    );
+    );    
+    
 }
 export default Login;

@@ -60,7 +60,7 @@ p, span, label {
     background: var(--magical-gradient);
     border-radius: 25px;
     border: 1px solid var(--glass-border);
-    padding: 20px;
+    padding: 50px;
     margin: 50px auto;
     max-width: 1200px;
     box-shadow: var(--neon-glow);
@@ -303,6 +303,7 @@ p, span, label {
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 30px;
 }
 
 .serverBtn:hover,
@@ -324,6 +325,7 @@ p, span, label {
     backdrop-filter: blur(10px);
     overflow: hidden;
     transition: transform 0.3s ease;
+    padding: 20px;
 }
 
 .iframe-wrapper:hover {

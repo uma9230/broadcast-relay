@@ -115,7 +115,6 @@ function Login({onLogin}) {
                                 className="inputs"
                                 type="text"
                                 placeholder="Username"
-                                maxLength={8}
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />

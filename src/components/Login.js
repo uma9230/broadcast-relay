@@ -167,7 +167,7 @@ function Login({onLogin}) {
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <h2>Password Reset</h2>
                         <p>Please contact the admin to reset your password.</p>
-                        <button onClick={() => setShowForgotModal(false)} className="login-btn">
+                        <button onClick={() => setShowForgotModal(false)} className="modal-primary-btn">
                             Close
                         </button>
                     </div>

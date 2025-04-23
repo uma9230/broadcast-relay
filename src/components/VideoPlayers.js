@@ -299,13 +299,16 @@ function VideoPlayers({ onLogout }) {
             {showLogoutModal && (
                 <div className="modal-overlay" onClick={cancelLogout}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                    <button className="close-icon" onClick={cancelLogout}>
+                            ✕
+                        </button>
                         <h2>Confirm Logout</h2>
                         <p>Are you sure you want to log out?</p>
                         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                            <button className="login-btn" onClick={confirmLogout}>
-                                Yes, Log Out
+                            <button className="modal-primary-btn" onClick={confirmLogout}>
+                                Confirm
                             </button>
-                            <button className="login-btn" onClick={cancelLogout}>
+                            <button className="modal-secondary-btn" onClick={cancelLogout}>
                                 Cancel
                             </button>
                         </div>

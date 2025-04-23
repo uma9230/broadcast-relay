@@ -4,23 +4,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
 :root {
-    /* Color Palette */
-    --primary: #4a86e8;
-    --primary-light: #c9daf8;
-    --primary-dark: #1a56cc;
-    --accent: #9fc5e8;
-    --text-color: #333333;
-    --background: #f3f8ff;
-    --success: #6aa84f;
-    --error: #cc0000;
-    --warning: #f1c232;
+    /* Neumorphic Color Palette */
+    --background: #E0E5EC;
+    --shadow-dark: #D1D9E6;
+    --shadow-light: #F9FBFF;
+    --text-color: #2C3E50;
+    --accent: #7F8C8D;
+    --primary: #6C757D;
+    --primary-dark: #495057;
+    --success: #28A745;
+    --error: #DC3545;
+    --warning: #FFC107;
 
     /* Effects */
-    --glass-border: rgba(74, 134, 232, 0.2);
-    --shadow-soft: 0 4px 12px rgba(74, 134, 232, 0.3);
-    --shadow-deep: 0 6px 18px rgba(74, 134, 232, 0.4);
-    --neon-glow: 0 0 10px rgba(74, 134, 232, 0.5);
-    --magical-gradient: linear-gradient(135deg, #c9daf8 0%, #4a86e8 100%);
+    --shadow-neumorphic: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
+    --shadow-neumorphic-inset: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
 }
 
 /* ====================
@@ -35,6 +33,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    margin: 0;
 }
 
 html, body {
@@ -42,10 +41,9 @@ html, body {
     overflow-x: hidden;
 }
 
-
 h1, h2, h3 {
     font-weight: 600;
-    color: var(--primary-dark);
+    color: var(--text-color);
 }
 
 p, span, label {
@@ -57,106 +55,88 @@ p, span, label {
    Container Wrapper
 ==================== */
 .container {
-    background: var(--magical-gradient);
-    border-radius: 25px;
-    border: 1px solid var(--glass-border);
-    padding: 50px;
-    margin: 50px auto;
+    background: var(--background);
+    border-radius: 20px;
+    padding: 30px;
+    margin: 20px auto;
     max-width: 1200px;
-    box-shadow: var(--neon-glow);
-    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-neumorphic);
 }
 
 /* ====================
    Login Page Styles
 ==================== */
-/* ============================= */
-/* ===== Login Component ====== */
-/* ============================= */
-
 .login-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 40px;
+    padding-top: 20px;
 }
 
-/* Login Box Wrapper */
 .login-form {
-    background: #ffffffcc;
-    border-radius: 25px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-soft);
-    backdrop-filter: blur(10px);
-    padding: 40px 30px;
+    background: var(--background);
+    border-radius: 20px;
+    padding: 30px;
     max-width: 400px;
     width: 100%;
-    box-sizing: border-box;
+    box-shadow: var(--shadow-neumorphic);
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
 }
 
-/* Title */
 .login-form h1 {
     margin-bottom: 10px;
-    color: var(--primary-dark);
-    font-weight: 600;
     font-size: 1.8rem;
     text-align: center;
+    color: var(--text-color);
 }
 
-/* Login Inputs */
 .inputs {
     width: 100%;
     padding: 12px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     text-align: center;
-    border: 2px solid var(--primary);
-    border-radius: 15px;
-    background: #fff;
+    border: none;
+    border-radius: 10px;
+    background: var(--background);
     color: var(--text-color);
+    box-shadow: var(--shadow-neumorphic-inset);
     transition: all 0.3s ease;
-    box-sizing: border-box;
 }
 
 .inputs:focus {
     outline: none;
-    border-color: var(--primary-dark);
-    box-shadow: 0 0 10px rgba(74, 134, 232, 0.3);
+    box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
 }
 
-/* Login Button */
 .login-btn {
     padding: 12px 24px;
-    border-radius: 25px;
+    border-radius: 15px;
     font-size: 1rem;
     font-weight: 500;
-    color: #fff;
-    background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+    color: var(--text-color);
+    background: var(--background);
     border: none;
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 1px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 100%;
+    box-shadow: var(--shadow-neumorphic);
+    transition: all 0.3s ease;
 }
 
 .login-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(74, 134, 232, 0.5);
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
 }
 
-/* Login spacing fix */
 .login-form form {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    margin-top: 20px;
+    gap: 15px;
+    margin-top: 15px;
 }
 
-/* Remember Me + Forgot Password */
 .login-options {
     width: 100%;
     display: flex;
@@ -173,17 +153,15 @@ p, span, label {
 }
 
 .forgot-password {
-    color: var(--primary-dark);
+    color: var(--primary);
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .forgot-password:hover {
-    color: var(--primary);
+    color: var(--primary-dark);
 }
 
-
-/* Error Message */
 .error-message {
     color: var(--error);
     font-size: 0.9rem;
@@ -191,17 +169,14 @@ p, span, label {
     text-align: center;
 }
 
-/* Disabled Login Message */
 .login-disabled-box {
-    background-color: #fff8e1;
-    border: 1px solid var(--warning);
+    background: var(--background);
     border-radius: 15px;
     padding: 20px;
     text-align: center;
     font-size: 0.95rem;
     color: var(--text-color);
-    box-sizing: border-box;
-    width: 100%;
+    box-shadow: var(--shadow-neumorphic);
 }
 
 .login-disabled-box p {
@@ -210,43 +185,39 @@ p, span, label {
 
 .login-disabled-box hr {
     border: none;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid var(--accent);
     margin: 10px 0;
 }
 
-/* ==== Modal Styling for Forgot Password ==== */
+/* Modal Styling for Forgot Password */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(51, 51, 51, 0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 999;
     padding: 20px;
-    box-sizing: border-box;
 }
 
 .modal-content {
-    background: #fff;
-    padding: 30px 40px;
+    background: var(--background);
+    padding: 30px;
     border-radius: 20px;
     text-align: center;
     max-width: 400px;
     width: 100%;
-    box-shadow: var(--shadow-deep);
-    position: relative;
-    box-sizing: border-box;
+    box-shadow: var(--shadow-neumorphic);
     animation: fadeInUp 0.3s ease;
 }
 
 .modal-content h2 {
     margin-bottom: 15px;
-    color: var(--primary-dark);
+    color: var(--text-color);
 }
 
 .modal-content p {
@@ -254,7 +225,6 @@ p, span, label {
     color: var(--text-color);
 }
 
-/* Animation for forgot password*/
 @keyframes fadeInUp {
     0% {
         transform: translateY(30px);
@@ -266,17 +236,6 @@ p, span, label {
     }
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 /* ====================
    Server Buttons
 ==================== */
@@ -285,7 +244,7 @@ p, span, label {
     justify-content: center;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 20px;
+    margin: 20px 0;
     width: 100%;
     max-width: 1000px;
 }
@@ -293,23 +252,26 @@ p, span, label {
 .serverBtn,
 #logout-button {
     padding: 12px 24px;
-    border-radius: 25px;
+    border-radius: 15px;
     font-size: 1rem;
     font-weight: 500;
-    color: #fff;
-    background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+    color: var(--text-color);
+    background: var(--background);
     border: none;
     cursor: pointer;
     text-transform: uppercase;
     letter-spacing: 1px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    margin-bottom: 30px;
+    box-shadow: var(--shadow-neumorphic);
+    transition: all 0.3s ease;
 }
 
 .serverBtn:hover,
 #logout-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px rgba(74, 134, 232, 0.5);
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+}
+
+.serverBtn.active {
+    box-shadow: var(--shadow-neumorphic-inset);
 }
 
 /* ====================
@@ -319,17 +281,15 @@ p, span, label {
     width: 90vw;
     max-width: 1000px;
     border-radius: 20px;
-    border: 1px solid var(--glass-border);
-    background: #ffffff1a;
-    box-shadow: var(--shadow-deep);
-    backdrop-filter: blur(10px);
+    background: var(--background);
+    box-shadow: var(--shadow-neumorphic);
     overflow: hidden;
-    transition: transform 0.3s ease;
     padding: 20px;
+    transition: all 0.3s ease;
 }
 
 .iframe-wrapper:hover {
-    transform: scale(1.02);
+    box-shadow: 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light);
 }
 
 .twitch-iframe,
@@ -337,6 +297,68 @@ p, span, label {
     width: 100%;
     aspect-ratio: 16 / 9;
     max-height: 70vh;
+    border-radius: 10px;
+}
+
+/* ====================
+   Header and Footer
+==================== */
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background: var(--background);
+    border-radius: 15px;
+    box-shadow: var(--shadow-neumorphic);
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 400px;
+}
+
+header img.logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+header h1, header h2 {
+    margin: 5px 0;
+    color: var(--text-color);
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: var(--background);
+    border-radius: 15px;
+    box-shadow: var(--shadow-neumorphic);
+    margin-top: 20px;
+}
+
+.footer_text_h3, .footer_text_p {
+    margin: 5px 0;
+    color: var(--text-color);
+}
+
+/* ====================
+   Video Players Header
+==================== */
+.video-players-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.greeting-name {
+    font-size: 1.5rem;
+    color: var(--text-color);
+}
+
+.username {
+    color: var(--primary);
 }
 
 /* ====================
@@ -349,5 +371,16 @@ p, span, label {
     .iframe-wrapper {
         width: 95%;
         padding: 15px;
+    }
+
+    .login-form {
+        padding: 20px;
+    }
+
+    .serverBtn,
+    #logout-button,
+    .login-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
     }
 }

@@ -111,9 +111,18 @@ function Login({ onLogin, theme, toggleTheme }) {
     return (
         <div className="login-container">
             <div className="login-wrapper">
-                <button className="theme-toggle" onClick={toggleTheme}>
-                    {theme === "light" ? "Dark Mode" : "Light Mode"}
-                </button>
+                <label className="label">
+                    <div className="toggle">
+                        <input
+                            className="toggle-state"
+                            type="checkbox"
+                            name="theme"
+                            checked={theme === "dark"}
+                            onChange={toggleTheme}
+                        />
+                        <div className="indicator"></div>
+                    </div>
+                </label>
                 <Header />
                 <div className="login-form">
                     <h1>Login</h1>

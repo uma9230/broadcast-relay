@@ -3,7 +3,7 @@ import { Realtimedb } from "../firebase";
 import { child, get, onValue, ref, set } from "firebase/database";
 import "plyr-react/plyr.css";
 import Plyr from "plyr-react";
-import "../App.css"; // Adjusted path to match App.js
+import "../App.css";
 
 function VideoPlayers({ onLogout, theme, toggleTheme }) {
     const [videoUrl, setVideoUrl] = useState("");
@@ -184,13 +184,22 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                     <h3>Loading...</h3>
                 ) : (
                     <h3 className="greeting-name">
-                        Welcome,&nbsp;<span className="username">{username ? name : "Not logged in"}</span>
+                        Welcome, <span className="username">{username ? name : "Not logged in"}</span>
                     </h3>
                 )}
                 <div>
-                    <button className="theme-toggle" onClick={toggleTheme}>
-                        {theme === "light" ? "Dark Mode" : "Light Mode"}
-                    </button>
+                    <label className="label">
+                        <div className="toggle">
+                            <input
+                                className="toggle-state"
+                                type="checkbox"
+                                name="theme"
+                                checked={theme === "dark"}
+                                onChange={toggleTheme}
+                            />
+                            <div className="indicator"></div>
+                        </div>
+                    </label>
                     <button id="logout-button" onClick={handleLogout}>
                         Logout
                     </button>

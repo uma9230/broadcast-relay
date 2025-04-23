@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import VideoPlayers from "./components/VideoPlayers";
 import Footer from "./components/Footer";
 import { clearAuthData, getAuthData, setAuthData } from "./util/auth";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);

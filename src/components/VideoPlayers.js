@@ -1,10 +1,11 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {Realtimedb} from "../firebase";
-import {child, get, onValue, ref, set} from "firebase/database";
+import React, { useCallback, useEffect, useState } from "react";
+import { Realtimedb } from "../firebase";
+import { child, get, onValue, ref, set } from "firebase/database";
 import "plyr-react/plyr.css";
 import Plyr from "plyr-react";
+import "../App.css"; // Adjusted path to match App.js
 
-function VideoPlayers({ onLogout }) {
+function VideoPlayers({ onLogout, theme, toggleTheme }) {
     const [videoUrl, setVideoUrl] = useState("");
     const [youtubeLiveURL, setYoutubeLiveURL] = useState("");
     const [youtubeVideoURL, setYoutubeVideoURL] = useState("");
@@ -40,52 +41,52 @@ function VideoPlayers({ onLogout }) {
 
     useEffect(() => {
         const serverARef = ref(Realtimedb, 'serverAStatus');
-            onValue(serverARef, (snapshot) => {
-                const data = snapshot.val();
-                setIsEnabledA(data);
-            });
+        onValue(serverARef, (snapshot) => {
+            const data = snapshot.val();
+            setIsEnabledA(data);
+        });
 
-            const serverBRef = ref(Realtimedb, 'serverBStatus');
-            onValue(serverBRef, (snapshot) => {
-                const data = snapshot.val();
-                setIsEnabledB(data);
-            });
+        const serverBRef = ref(Realtimedb, 'serverBStatus');
+        onValue(serverBRef, (snapshot) => {
+            const data = snapshot.val();
+            setIsEnabledB(data);
+        });
 
-            const serverCRef = ref(Realtimedb, 'serverCStatus');
-            onValue(serverCRef, (snapshot) => {
-                const data = snapshot.val();
-                setIsEnabledC(data);
-            });
+        const serverCRef = ref(Realtimedb, 'serverCStatus');
+        onValue(serverCRef, (snapshot) => {
+            const data = snapshot.val();
+            setIsEnabledC(data);
+        });
 
-            const serverDRef = ref(Realtimedb, 'serverDStatus');
-            onValue(serverDRef, (snapshot) => {
-                const data = snapshot.val();
-                setIsEnabledD(data);
-            });
+        const serverDRef = ref(Realtimedb, 'serverDStatus');
+        onValue(serverDRef, (snapshot) => {
+            const data = snapshot.val();
+            setIsEnabledD(data);
+        });
 
-            const serverARefID = ref(Realtimedb, 'serverAID');
-            onValue(serverARefID, (snapshot) => {
-                const data = snapshot.val();
-                setVideoUrl(data);
-            });
+        const serverARefID = ref(Realtimedb, 'serverAID');
+        onValue(serverARefID, (snapshot) => {
+            const data = snapshot.val();
+            setVideoUrl(data);
+        });
 
-            const serverBRefID = ref(Realtimedb, 'serverBID');
-            onValue(serverBRefID, (snapshot) => {
-                const data = snapshot.val();
-                setYoutubeLiveURL(data);
-            });
+        const serverBRefID = ref(Realtimedb, 'serverBID');
+        onValue(serverBRefID, (snapshot) => {
+            const data = snapshot.val();
+            setYoutubeLiveURL(data);
+        });
 
-            const serverCRefID = ref(Realtimedb, 'serverCID');
-            onValue(serverCRefID, (snapshot) => {
-                const data = snapshot.val();
-                setDriveURL(data);
-            });
+        const serverCRefID = ref(Realtimedb, 'serverCID');
+        onValue(serverCRefID, (snapshot) => {
+            const data = snapshot.val();
+            setDriveURL(data);
+        });
 
-            const serverDRefID = ref(Realtimedb, 'serverDID');
-            onValue(serverDRefID, (snapshot) => {
-                const data = snapshot.val();
-                setYoutubeVideoURL(data);
-            });
+        const serverDRefID = ref(Realtimedb, 'serverDID');
+        onValue(serverDRefID, (snapshot) => {
+            const data = snapshot.val();
+            setYoutubeVideoURL(data);
+        });
 
         if (isEnabledA) {
             setActiveServer("serverA");
@@ -127,7 +128,6 @@ function VideoPlayers({ onLogout }) {
                 onLogout();
             }
         });
-
     }, [isEnabledA, isEnabledB, isEnabledC, isEnabledD, username, onLogout]);
 
     useEffect(() => {
@@ -179,61 +179,64 @@ function VideoPlayers({ onLogout }) {
 
     return (
         <main className="Video-section">
-           <div className="video-players-header">
-    {isLoading ? (
-        <h3>Loading...</h3>
-    ) : (
-        <h3 className="greeting-name">
-            Welcome,&nbsp;<span className="username">{username ? name : "Not logged in"}</span>
-        </h3>
-    )}
-    <button id="logout-button" onClick={handleLogout}>
-        Logout
-    </button>
-</div>
+            <div className="video-players-header">
+                {isLoading ? (
+                    <h3>Loading...</h3>
+                ) : (
+                    <h3 className="greeting-name">
+                        Welcome,&nbsp;<span className="username">{username ? name : "Not logged in"}</span>
+                    </h3>
+                )}
+                <div>
+                    <button className="theme-toggle" onClick={toggleTheme}>
+                        {theme === "light" ? "Dark Mode" : "Light Mode"}
+                    </button>
+                    <button id="logout-button" onClick={handleLogout}>
+                        Logout
+                    </button>
+                </div>
+            </div>
             <div className="iframe-container">
                 {/* Server buttons */}
                 <div className="servers">
-                    {
-                        !isLoading ? (
-                            <>
-                                {isEnabledA && (
-                                    <button
-                                        className={`serverBtn ${activeServer === "serverA" ? "active" : ""}`}
-                                        onClick={() => handleServerChange("serverA")}
-                                    >
-                                        Server A
-                                    </button>
-                                )}
-                                {isEnabledB && (
-                                    <button
-                                        className={`serverBtn ${activeServer === "serverB" ? "active" : ""}`}
-                                        onClick={() => handleServerChange("serverB")}
-                                    >
-                                        Server B
-                                    </button>
-                                )}
-                                {isEnabledC && (
-                                    <button
-                                        className={`serverBtn ${activeServer === "serverC" ? "active" : ""}`}
-                                        onClick={() => handleServerChange("serverC")}
-                                    >
-                                        Server C
-                                    </button>
-                                )}
-                                {isEnabledD && (
-                                    <button
-                                        className={`serverBtn ${activeServer === "serverD" ? "active" : ""}`}
-                                        onClick={() => handleServerChange("serverD")}
-                                    >
-                                        Server D
-                                    </button>
-                                )}
-                            </>
-                        ) : (
-                            <h3>Loading...</h3>
-                        )
-                    }
+                    {!isLoading ? (
+                        <>
+                            {isEnabledA && (
+                                <button
+                                    className={`serverBtn ${activeServer === "serverA" ? "active" : ""}`}
+                                    onClick={() => handleServerChange("serverA")}
+                                >
+                                    Server A
+                                </button>
+                            )}
+                            {isEnabledB && (
+                                <button
+                                    className={`serverBtn ${activeServer === "serverB" ? "active" : ""}`}
+                                    onClick={() => handleServerChange("serverB")}
+                                >
+                                    Server B
+                                </button>
+                            )}
+                            {isEnabledC && (
+                                <button
+                                    className={`serverBtn ${activeServer === "serverC" ? "active" : ""}`}
+                                    onClick={() => handleServerChange("serverC")}
+                                >
+                                    Server C
+                                </button>
+                            )}
+                            {isEnabledD && (
+                                <button
+                                    className={`serverBtn ${activeServer === "serverD" ? "active" : ""}`}
+                                    onClick={() => handleServerChange("serverD")}
+                                >
+                                    Server D
+                                </button>
+                            )}
+                        </>
+                    ) : (
+                        <h3>Loading...</h3>
+                    )}
                 </div>
 
                 {/* Video players */}
@@ -254,7 +257,7 @@ function VideoPlayers({ onLogout }) {
                         )}
                         {activeServer === "serverB" && (
                             <div className="iframe-wrapper">
-                                <div className="twitch-iframe" style={{height: "calc(100% - 50px)"}}>
+                                <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
                                     <iframe
                                         src={`https://anym3u8player.com/tv/video-player.php?url=https%3A%2F%2Fworker-damp-poetry-68b1.1doi3.workers.dev%2Fhttp%3A%2F%2Fythls-v3.onrender.com%2Fvideo%2F${youtubeLiveURL}.m3u8`}
                                         title="Server B"
@@ -267,7 +270,7 @@ function VideoPlayers({ onLogout }) {
                         )}
                         {activeServer === "serverC" && (
                             <div className="iframe-wrapper">
-                                <div className="twitch-iframe" style={{height: "calc(100% - 50px)"}}>
+                                <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
                                     <iframe
                                         className="twitch-iframe"
                                         src={`https://drive.google.com/file/d/${driveURL}/preview`}
@@ -282,7 +285,7 @@ function VideoPlayers({ onLogout }) {
                         )}
                         {activeServer === "serverD" && (
                             <div className="iframe-wrapper">
-                                <div className="twitch-iframe" style={{height: "calc(100% - 50px)"}}>
+                                <div className="twitch-iframe" style={{ height: "calc(100% - 50px)" }}>
                                     <Plyr {...player} />
                                 </div>
                             </div>
@@ -299,7 +302,7 @@ function VideoPlayers({ onLogout }) {
             {showLogoutModal && (
                 <div className="modal-overlay" onClick={cancelLogout}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                    <button className="close-icon" onClick={cancelLogout}>
+                        <button className="close-icon" onClick={cancelLogout}>
                             ✕
                         </button>
                         <h2>Confirm Logout</h2>

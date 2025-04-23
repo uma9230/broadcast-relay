@@ -4,7 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
 :root {
-    /* Neumorphic Color Palette */
+    /* Light Mode Colors (Current Visuals) */
     --background: #E0E5EC;
     --shadow-dark: #D1D9E6;
     --shadow-light: #F9FBFF;
@@ -17,6 +17,24 @@
     --warning: #FFC107;
 
     /* Effects */
+    --shadow-neumorphic: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
+    --shadow-neumorphic-inset: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+}
+
+/* Dark Mode Colors (Charcoal Palette) */
+[data-theme="dark"] {
+    --background: #111827; /* Charcoal */
+    --shadow-dark: #0A0F1B; /* Very dark shade for neumorphic depth */
+    --shadow-light: #1F2937; /* Slightly lighter charcoal for highlights */
+    --text-color: #D1D5DB; /* Light gray for readability */
+    --accent: #6B7280; /* Muted gray for subtle elements */
+    --primary: #9CA3AF; /* Lighter gray for buttons/links */
+    --primary-dark: #D1D5DB; /* Soft light gray for hover effects */
+    --success: #34D399; /* Bright green for visibility */
+    --error: #F87171; /* Bright red for errors */
+    --warning: #FBBF24; /* Bright amber for warnings */
+
+    /* Adjusted Shadows for Dark Mode */
     --shadow-neumorphic: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
     --shadow-neumorphic-inset: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
 }
@@ -292,7 +310,7 @@ p, span, label {
 
 .modal-content {
     position: relative;
-    background: #F5F7FA; /* Lighter background to match image */
+    background: #F5F7FA; /* Light mode background */
     padding: 20px;
     border-radius: 12px; /* Tighter corners */
     text-align: center;
@@ -300,6 +318,11 @@ p, span, label {
     width: 100%;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
     animation: fadeInUp 0.3s ease;
+}
+
+[data-theme="dark"] .modal-content {
+    background: #1F2937; /* Slightly lighter charcoal for contrast */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .modal-content .close-icon {
@@ -338,7 +361,7 @@ p, span, label {
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--text-color);
-    background: #E0E5EC; /* Light neumorphic background */
+    background: #E0E5EC; /* Light mode background */
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -346,8 +369,17 @@ p, span, label {
     transition: all 0.3s ease;
 }
 
+[data-theme="dark"] .modal-primary-btn {
+    background: #111827; /* Match dark mode background */
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3), -3px -3px 6px rgba(255, 255, 255, 0.1);
+}
+
 .modal-primary-btn:hover {
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15), -2px -2px 4px rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="dark"] .modal-primary-btn:hover {
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4), -2px -2px 4px rgba(255, 255, 255, 0.2);
 }
 
 .modal-secondary-btn {
@@ -364,6 +396,10 @@ p, span, label {
 
 .modal-secondary-btn:hover {
     color: #c82333; /* Slightly darker red on hover */
+}
+
+[data-theme="dark"] .modal-secondary-btn:hover {
+    color: #FF7875; /* Lighter red for dark mode */
 }
 
 @keyframes fadeInUp {
@@ -400,6 +436,26 @@ p, span, label {
     }
 }
 
+/* Theme Toggle Button */
+.theme-toggle {
+    padding: 10px 20px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+    background: var(--background);
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: var(--shadow-neumorphic);
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+}
+
 /* ====================
    Server Buttons
 ==================== */
@@ -414,7 +470,8 @@ p, span, label {
 }
 
 .serverBtn,
-#logout-button {
+#logout-button,
+.theme-toggle {
     padding: 12px 24px;
     border-radius: 15px;
     font-size: 1rem;
@@ -430,7 +487,8 @@ p, span, label {
 }
 
 .serverBtn:hover,
-#logout-button:hover {
+#logout-button:hover,
+.theme-toggle:hover {
     box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
 }
 
@@ -512,6 +570,8 @@ footer {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .greeting-name {
@@ -536,8 +596,14 @@ footer {
 
     .serverBtn,
     #logout-button,
-    .login-btn {
+    .login-btn,
+    .theme-toggle {
         padding: 10px 20px;
         font-size: 0.9rem;
+    }
+
+    .video-players-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

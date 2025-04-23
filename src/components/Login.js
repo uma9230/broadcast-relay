@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from "react";
-import {onValue, ref, set} from "firebase/database";
-import {doc, getDoc} from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { onValue, ref, set } from "firebase/database";
+import { doc, getDoc } from "firebase/firestore";
 import "../App.css";
-import {db, Realtimedb} from "../firebase";
+import { db, Realtimedb } from "../firebase";
 import Header from "./Header";
 
-function Login({onLogin}) {
+function Login({ onLogin, theme, toggleTheme }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
@@ -15,10 +15,10 @@ function Login({onLogin}) {
 
     useEffect(() => {
         const loginStatRef = ref(Realtimedb, 'loginStatus');
-            onValue(loginStatRef, (snapshot) => {
-                const data = snapshot.val();
-                setIsLoginEnabled(data);
-            });
+        onValue(loginStatRef, (snapshot) => {
+            const data = snapshot.val();
+            setIsLoginEnabled(data);
+        });
     }, []);
 
     useEffect(() => {
@@ -29,13 +29,12 @@ function Login({onLogin}) {
                 const loggedInUsers = Object.keys(data);
                 if (loggedInUsers.includes(username)) {
                     if (data[username].login_status) {
-                        if(username === "admin") {
+                        if (username === "admin") {
                             setIsAlreadyLoggedIn(false);
                         } else {
                             setIsAlreadyLoggedIn(true);
                         }
-                    }
-                    else {
+                    } else {
                         setIsAlreadyLoggedIn(false);
                     }
                 }
@@ -65,12 +64,6 @@ function Login({onLogin}) {
         } else {
             localStorage.removeItem('rememberedUsername');
         }
-
-        // if (!username || !password) {
-        //     const loginError = document.getElementById("login-error");
-        //     loginError.innerHTML = "Please enter a username and password.";
-        //     return;
-        // }
 
         if (!username && !password) {
             const loginError = document.getElementById("login-error");
@@ -118,6 +111,9 @@ function Login({onLogin}) {
     return (
         <div className="login-container">
             <div className="login-wrapper">
+                <button className="theme-toggle" onClick={toggleTheme}>
+                    {theme === "light" ? "Dark Mode" : "Light Mode"}
+                </button>
                 <Header />
                 <div className="login-form">
                     <h1>Login</h1>

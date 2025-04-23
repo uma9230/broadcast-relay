@@ -4,7 +4,7 @@ import "../App.css";
 import {onValue, ref} from "firebase/database";
 import {Realtimedb} from "../firebase";
 
-function Header() {
+function Header({theme}) {
     const [miqaatName, setMiqaatName] = useState("");
 
     useEffect(() => {

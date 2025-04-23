@@ -71,12 +71,98 @@ p, span, label {
     flex-direction: column;
     align-items: center;
     padding-top: 20px;
+    width: 100%;
+}
+
+.login-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    gap: 20px;
+}
+
+/* Landscape View for Larger Screens */
+@media screen and (min-width: 768px) {
+    .login-wrapper {
+        flex-direction: row;
+        justify-content: center;
+        align-items: stretch; /* Ensure header and login form have equal height */
+        gap: 40px;
+    }
+
+    .login-form {
+        flex: 1;
+        max-width: 400px;
+        min-width: 300px;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    header {
+        flex: 1;
+        max-width: 400px;
+        min-width: 300px;
+        padding: 30px;
+        margin-bottom: 0;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: var(--shadow-neumorphic);
+        border-radius: 20px;
+    }
+
+    header img.logo {
+        width: 100px;
+        height: 100px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Portrait View for Mobile Screens */
+@media screen and (max-width: 767px) {
+    .login-wrapper {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .login-form {
+        width: 95%;
+        max-width: 400px;
+        padding: 20px;
+        margin: 0 10px; /* Add horizontal margin for spacing */
+    }
+
+    header {
+        width: 95%;
+        max-width: 400px;
+        padding: 20px;
+        margin: 0 10px 20px 10px; /* Add horizontal margin, keep bottom margin */
+    }
+
+    footer {
+        width: 95%;
+        max-width: 400px;
+        padding: 20px;
+        margin: 0 10px; /* Add horizontal margin for spacing */
+    }
 }
 
 .login-form {
     background: var(--background);
     border-radius: 20px;
-    padding: 30px;
+    padding: 20px;
     max-width: 400px;
     width: 100%;
     box-shadow: var(--shadow-neumorphic);
@@ -93,7 +179,7 @@ p, span, label {
 }
 
 .inputs {
-    width: 100%;
+    width: 90%;
     padding: 12px;
     font-size: 1rem;
     text-align: center;
@@ -307,13 +393,11 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 30px;
+    padding: 20px;
     background: var(--background);
     border-radius: 15px;
     box-shadow: var(--shadow-neumorphic);
     margin-bottom: 20px;
-    width: 100%;
-    max-width: 400px;
 }
 
 header img.logo {
@@ -366,15 +450,10 @@ footer {
 ==================== */
 @media screen and (max-width: 768px) {
     .container,
-    .login-form,
     .servers,
     .iframe-wrapper {
         width: 95%;
         padding: 15px;
-    }
-
-    .login-form {
-        padding: 20px;
     }
 
     .serverBtn,

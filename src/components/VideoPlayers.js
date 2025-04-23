@@ -19,6 +19,7 @@ function VideoPlayers({ onLogout }) {
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
     const [showPlayer, setShowPlayer] = useState(null);
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     const handleServerChange = (server) => {
         setActiveServer(server);
@@ -134,7 +135,6 @@ function VideoPlayers({ onLogout }) {
         if (youtubeIframe) {
             youtubeIframe.addEventListener('load', handleIframeLoad);
         }
-        // Cleanup function to remove event listener on unmount
         return () => {
             if (youtubeIframe) {
                 youtubeIframe.removeEventListener('load', handleIframeLoad);
@@ -142,14 +142,22 @@ function VideoPlayers({ onLogout }) {
         };
     }, [handleIframeLoad]);
 
-
     const handleLogout = async () => {
+        setShowLogoutModal(true);
+    };
+
+    const confirmLogout = async () => {
         try {
             await set(ref(Realtimedb, `/loggedInUsers/${username}/login_status`), false);
             onLogout();
         } catch (error) {
             console.error("Error updating login status:", error);
         }
+        setShowLogoutModal(false);
+    };
+
+    const cancelLogout = () => {
+        setShowLogoutModal(false);
     };
 
     document.addEventListener("contextmenu", (e) => {
@@ -285,8 +293,25 @@ function VideoPlayers({ onLogout }) {
                         <h4>Nothing to show</h4>
                     </div>
                 )}
-
             </div>
+
+            {/* Logout Confirmation Modal */}
+            {showLogoutModal && (
+                <div className="modal-overlay" onClick={cancelLogout}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h2>Confirm Logout</h2>
+                        <p>Are you sure you want to log out?</p>
+                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                            <button className="login-btn" onClick={confirmLogout}>
+                                Yes, Log Out
+                            </button>
+                            <button className="login-btn" onClick={cancelLogout}>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

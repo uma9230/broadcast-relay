@@ -9,11 +9,9 @@ function Login({onLogin}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
-
     const [isLoginEnabled, setIsLoginEnabled] = useState(true);
     const [rememberMe, setRememberMe] = useState(false);
     const [showForgotModal, setShowForgotModal] = useState(false);
-
 
     useEffect(() => {
         const loginStatRef = ref(Realtimedb, 'loginStatus');
@@ -21,7 +19,6 @@ function Login({onLogin}) {
                 const data = snapshot.val();
                 setIsLoginEnabled(data);
             });
-        
     }, []);
 
     useEffect(() => {
@@ -53,12 +50,11 @@ function Login({onLogin}) {
             setRememberMe(true);
         }
     }, []);
-    
 
     const updateLoginStatus = (username, isLoggedIn, user) => {
-        set(ref(Realtimedb, `loggedInUsers/${username}/login_status`), isLoggedIn)
-        set(ref(Realtimedb, `loggedInUsers/${username}/login_time`), new Date().toLocaleString())
-        set(ref(Realtimedb, `loggedInUsers/${username}/name`), user.name)
+        set(ref(Realtimedb, `loggedInUsers/${username}/login_status`), isLoggedIn);
+        set(ref(Realtimedb, `loggedInUsers/${username}/login_time`), new Date().toLocaleString());
+        set(ref(Realtimedb, `loggedInUsers/${username}/name`), user.name);
     };
 
     const handleSubmit = (e) => {
@@ -69,10 +65,26 @@ function Login({onLogin}) {
         } else {
             localStorage.removeItem('rememberedUsername');
         }
-        
-        if (!username || !password) {
+
+        // if (!username || !password) {
+        //     const loginError = document.getElementById("login-error");
+        //     loginError.innerHTML = "Please enter a username and password.";
+        //     return;
+        // }
+
+        if (!username && !password) {
             const loginError = document.getElementById("login-error");
-            loginError.innerHTML = "Please enter a username and password.";
+            loginError.innerHTML = 'Please enter a username and password.';
+            return;
+        }
+        if (!username) {
+            const loginError = document.getElementById("login-error");
+            loginError.innerHTML = 'Please enter a username.';
+            return;
+        }
+        if (!password) {
+            const loginError = document.getElementById("login-error");
+            loginError.innerHTML = 'Please enter a password.';
             return;
         }
 
@@ -105,50 +117,50 @@ function Login({onLogin}) {
 
     return (
         <div className="login-container">
-            <Header />
-            <div className="login-form">
-                <h1>Login</h1>
-                <form onSubmit={handleSubmit}>
-                    {isLoginEnabled ? (
-                        <>
-                            <input
-                                className="inputs"
-                                type="text"
-                                placeholder="Username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                            />
-                            <input
-                                className="inputs"
-                                type="password"
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-    
-                            <div className="login-options">
-                                <label className="remember-me">
-                                    <input
-                                        type="checkbox"
-                                        checked={rememberMe}
-                                        onChange={(e) => setRememberMe(e.target.checked)}
-                                    />
-                                    Remember Me
-                                </label>
-                                <a href="#" onClick={() => setShowForgotModal(true)} className="forgot-password">Forgot Password?</a>
+            <div className="login-wrapper">
+                <Header />
+                <div className="login-form">
+                    <h1>Login</h1>
+                    <form onSubmit={handleSubmit}>
+                        {isLoginEnabled ? (
+                            <>
+                                <input
+                                    className="inputs"
+                                    type="text"
+                                    placeholder="Username"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                />
+                                <input
+                                    className="inputs"
+                                    type="password"
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <div className="login-options">
+                                    <label className="remember-me">
+                                        <input
+                                            type="checkbox"
+                                            checked={rememberMe}
+                                            onChange={(e) => setRememberMe(e.target.checked)}
+                                        />
+                                        Remember Me
+                                    </label>
+                                    <a href="#" onClick={() => setShowForgotModal(true)} className="forgot-password">Forgot Password?</a>
+                                </div>
+                                <button className="login-btn" type="submit">Login</button>
+                            </>
+                        ) : (
+                            <div className="login-disabled-box">
+                                <p>Login is currently disabled.</p>
+                                <hr />
+                                <p>Login will start 30 mins before the broadcast.</p>
                             </div>
-    
-                            <button className="login-btn" type="submit">Login</button>
-                        </>
-                    ) : (
-                        <div className="login-disabled-box">
-                            <p>Login is currently disabled.</p>
-                            <hr />
-                            <p>Login will start 30 mins before the broadcast.</p>
-                        </div>
-                    )}
-                </form>
-                <p id="login-error" className="error-message"></p>
+                        )}
+                    </form>
+                    <p id="login-error" className="error-message"></p>
+                </div>
             </div>
             {showForgotModal && (
                 <div className="modal-overlay" onClick={() => setShowForgotModal(false)}>
@@ -162,7 +174,7 @@ function Login({onLogin}) {
                 </div>
             )}
         </div>
-    );    
-    
+    );
 }
+
 export default Login;

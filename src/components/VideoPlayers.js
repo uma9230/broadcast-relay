@@ -304,7 +304,7 @@ function VideoPlayers({ onLogout }) {
                         </button>
                         <h2>Confirm Logout</h2>
                         <p>Are you sure you want to log out?</p>
-                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                        <div className="modal-buttons">
                             <button className="modal-primary-btn" onClick={confirmLogout}>
                                 Confirm
                             </button>

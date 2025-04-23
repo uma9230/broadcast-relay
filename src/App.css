@@ -162,7 +162,7 @@ p, span, label {
 .login-form {
     background: var(--background);
     border-radius: 20px;
-    padding: 20px;
+    padding: 30px;
     max-width: 400px;
     width: 100%;
     box-shadow: var(--shadow-neumorphic);
@@ -179,7 +179,7 @@ p, span, label {
 }
 
 .inputs {
-    width: 90%;
+    width: 100%;
     padding: 12px;
     font-size: 1rem;
     text-align: center;
@@ -305,7 +305,7 @@ p, span, label {
 .modal-content .close-icon {
     position: absolute;
     top: 10px;
-    right: 15px;
+    right: 10px;
     font-size: 1rem;
     color: var(--text-color);
     cursor: pointer;

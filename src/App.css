@@ -524,15 +524,34 @@ p, span, label {
     transform: translateY(-50%) translateX(-50%) scale(1); /* Normal size when active */
 }
 
-/* Ensure active icon in light mode is prominent */
-.toggle-state:not(:checked) ~ .toggle::before {
-    opacity: 1; /* Fully visible when active */
-    transform: translateY(-50%) translateX(-50%) scale(1); /* Normal size when active */
+/* Replace Font Awesome icons with emoji */
+.toggle::before {
+    content: "☀️"; /* Sun emoji */
+    font-family: sans-serif;
+    left: 15px;
+    transform: translateY(-50%) translateX(-50%);
+    color: #F59E0B;
+}
+
+.toggle::after {
+    content: "🌙"; /* Moon emoji */
+    font-family: sans-serif;
+    left: 45px;
+    transform: translateY(-50%) translateX(-50%);
+    color: #9CA3AF;
+    opacity: 0.5;
+}
+
+/* Fix duplicate transform property */
+[data-theme="dark"] .toggle::after {
+    color: #FBBF24;
+    opacity: 1;
+    transform: translateY(-50%) translateX(-50%) scale(1);
 }
 
 .toggle-state:not(:checked) ~ .toggle::after {
-    opacity: 0.5; /* Fade the inactive icon */
-    transform: translateY(-50%) translateX(-50%) scale(0.8); /* Slightly smaller when inactive */
+    opacity: 0.5;
+    transform: translateY(-50%) translateX(-50%) scale(0.8);
 }
 
 /* ====================

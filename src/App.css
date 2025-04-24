@@ -437,22 +437,58 @@ p, span, label {
 }
 
 /* Toggle Switch Styles */
-.label {
+/* .label {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
-    margin-right: 10px; /* Space between toggle and logout button */
+    margin-right: 10px;  Space between toggle and logout button 
+} */
+ /* Toggle Switch Styles */
+.label {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 1000;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    margin: 0;
+}
+@media screen and (max-width: 767px) {
+    .label {
+        top: 15px;
+        right: 15px;
+    }
+}
+
+/* Toggle Switch Styles */
+.label {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 1000;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.toggle-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .toggle {
-    isolation: isolate;
     position: relative;
-    height: 30px;
-    width: 60px;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: var(--shadow-neumorphic-inset);
+    height: 40px;
+    width: 80px;
+    border-radius: 20px;
     background: var(--background);
+    box-shadow: var(--shadow-neumorphic-inset);
+    transition: background 0.3s ease;
 }
 
 .toggle-state {
@@ -461,69 +497,44 @@ p, span, label {
 
 .indicator {
     position: absolute;
-    top: 3px;
-    left: 3px;
-    height: 24px; /* Slightly larger for better visibility */
-    width: 24px; /* Square to match height, forming a circle */
-    background: #FFFFFF; /* Pure white for light mode */
-    border-radius: 50%; /* Circular indicator */
-    transform: translateX(0); /* Start on the left */
-    transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35), background 0.3s ease;
-    box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light); /* Removed glow for clearer centering */
-}
-
-[data-theme="dark"] .indicator {
-    background: #6B7280; /* Lighter gray for dark mode */
+    top: 4px;
+    left: 4px;
+    height: 32px;
+    width: 32px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    transform: translateX(0);
+    transition: transform 0.4s ease, background 0.3s ease;
     box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
-}
-
-.toggle-state:checked ~ .indicator {
-    transform: translateX(30px); /* Slide to the right */
-}
-
-/* Sun and Moon Icons (Using Font Awesome) */
-.toggle::before,
-.toggle::after {
-    position: absolute;
-    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
     font-size: 16px;
-    line-height: 1;
-    z-index: 1; /* Ensure icons are above the indicator */
-    transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+    color: #6B7280;
 }
 
-.toggle::before { /* Sun icon (left side, light mode) */
-    content: "\f185"; /* Font Awesome sun icon */
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    left: 15px; /* Center of the indicator when on the left (3px + 24px/2) */
-    transform: translateY(-50%) translateX(-50%); /* Center the icon */
-    color: #F59E0B; /* Orange to match the provided image */
+.toggle-state:checked + .toggle .indicator {
+    transform: translateX(40px);
+    background: #4A90E2; /* Blue circle for dark mode */
 }
 
-[data-theme="dark"] .toggle::before {
-    color: #6B7280; /* Muted gray in dark mode (inactive) */
-    opacity: 0.5; /* Fade the inactive icon */
-    transform: translateY(-50%) translateX(-50%) scale(0.8); /* Slightly smaller when inactive */
+.toggle-state:checked + .toggle .indicator::before {
+    content: "\f186"; /* Moon icon for dark mode */
+    color: #FFFFFF;
 }
 
-.toggle::after { /* Moon icon (right side, dark mode) */
-    content: "\f186"; /* Font Awesome moon icon */
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    left: 45px; /* Center of the indicator when on the right (3px + 30px + 24px/2) */
-    transform: translateY(-50%) translateX(-50%); /* Center the icon */
-    color: #9CA3AF; /* Muted gray in light mode (inactive) */
-    opacity: 0.5; /* Fade the inactive icon */
-    transform: translateY(-50%) translateX(-50%) scale(0.8); /* Slightly smaller when inactive */
+.toggle-state:not(:checked) + .toggle .indicator::before {
+    content: "\f185"; /* Sun icon for light mode */
+    color: #FBBF24;
 }
 
-[data-theme="dark"] .toggle::after {
-    color: #FBBF24; /* Yellow to match the provided image */
-    opacity: 1; /* Fully visible when active */
-    transform: translateY(-50%) translateX(-50%) scale(1); /* Normal size when active */
+.toggle {
+    background: #E0E5EC; /* Light mode background */
 }
 
+<<<<<<< HEAD
 /* Replace Font Awesome icons with emoji */
 .toggle::before {
     content: "☀️"; /* Sun emoji */
@@ -552,6 +563,60 @@ p, span, label {
 .toggle-state:not(:checked) ~ .toggle::after {
     opacity: 0.5;
     transform: translateY(-50%) translateX(-50%) scale(0.8);
+=======
+[data-theme="dark"] .toggle {
+    background: #0A0F1B; /* Dark mode background */
+}
+
+[data-theme="dark"] .toggle-state:checked + .toggle .indicator {
+    background: #111827;
+}
+
+[data-theme="dark"] .toggle-state:checked + .toggle .indicator::before {
+    color: #E0E5EC; /* Yellow moon in dark mode */
+}
+
+/* Labels for Light and Dark Mode */
+/* .toggle-wrapper::before {
+    content: "LIGHT MODE";
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+    text-transform: uppercase;
+    margin-right: 10px;
+}
+
+.toggle-wrapper::after {
+    content: "DARK MODE";
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+    text-transform: uppercase;
+    margin-left: 10px;
+} */
+
+/* Responsive Adjustments */
+@media screen and (max-width: 767px) {
+    .label {
+        top: 15px;
+        right: 15px;
+    }
+    .toggle {
+        height: 35px;
+        width: 70px;
+    }
+    .indicator {
+        height: 27px;
+        width: 27px;
+    }
+    .toggle-state:checked + .toggle .indicator {
+        transform: translateX(35px);
+    }
+    .toggle-wrapper::before,
+    .toggle-wrapper::after {
+        font-size: 0.8rem;
+    }
+>>>>>>> 46169726404762f51c08b1de4edcfe78edb7948d
 }
 
 /* ====================
@@ -702,3 +767,4 @@ footer {
         align-items: flex-start;
     }
 }
+

@@ -189,7 +189,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                 )}
                 <div>
                     <label className="label">
-                        <div className="toggle">
+                        {/* <div className="toggle">
                             <input
                                 className="toggle-state"
                                 type="checkbox"
@@ -198,7 +198,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                 onChange={toggleTheme}
                             />
                             <div className="indicator"></div>
-                        </div>
+                        </div> */}
                     </label>
                     <button id="logout-button" onClick={handleLogout}>
                         Logout

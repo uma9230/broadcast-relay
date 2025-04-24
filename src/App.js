@@ -43,18 +43,34 @@ function App() {
     };
 
     return (
-        <div className="container" data-theme={theme}>
-            <div className="content">
-                {isLoggedIn ? (
-                    <VideoPlayers onLogout={handleLogout} theme={theme} toggleTheme={toggleTheme} />
-                ) : (
-                    <>
-                        <Login onLogin={handleLogin} theme={theme} toggleTheme={toggleTheme} />
-                    </>
-                )}
-            </div>
-            <Footer theme={theme} />
+        <>
+            <label className="label">
+    <div className="toggle-wrapper">
+        <input
+            type="checkbox"
+            className="toggle-state"
+            checked={theme === "dark"}
+            onChange={toggleTheme}
+            aria-label="Toggle dark mode"
+        />
+        <div className="toggle">
+            <div className="indicator"></div>
         </div>
+    </div>
+</label>
+            <div className="container" data-theme={theme}>
+                <div className="content">
+                    {isLoggedIn ? (
+                        <VideoPlayers onLogout={handleLogout} theme={theme} />
+                    ) : (
+                        <>
+                            <Login onLogin={handleLogin} theme={theme} />
+                        </>
+                    )}
+                </div>
+                <Footer theme={theme} />
+            </div>
+        </>
     );
 }
 

@@ -112,7 +112,7 @@ function Login({ onLogin, theme, toggleTheme }) {
         <div className="login-container">
             <div className="login-wrapper">
                 <label className="label">
-                    <div className="toggle">
+                    {/* <div className="toggle">
                         <input
                             className="toggle-state"
                             type="checkbox"
@@ -121,7 +121,7 @@ function Login({ onLogin, theme, toggleTheme }) {
                             onChange={toggleTheme}
                         />
                         <div className="indicator"></div>
-                    </div>
+                    </div> */}
                 </label>
                 <Header />
                 <div className="login-form">

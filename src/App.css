@@ -75,10 +75,146 @@ p, span, label {
 .container {
     background: var(--background);
     border-radius: 20px;
-    padding: 30px;
+    padding: 50px;
     margin: 20px auto;
-    max-width: 1200px;
+    max-width: 1600px; /* Increased container size */
     box-shadow: var(--shadow-neumorphic);
+    position: relative; /* Ensure container is a positioning context */
+}
+
+/* Toggle Container */
+.toggle-container {
+    width: 100%;
+    display: flex;
+    margin-bottom: 20px;
+}
+
+/* Toggle Switch Styles */
+.label {
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.toggle-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toggle {
+    position: relative;
+    height: 40px;
+    width: 80px;
+    border-radius: 20px;
+    background: var(--background);
+    box-shadow: var(--shadow-neumorphic-inset);
+    transition: background 0.3s ease;
+}
+
+.toggle-state {
+    display: none;
+}
+
+.indicator {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    height: 32px;
+    width: 32px;
+    background: #FFFFFF;
+    border-radius: 50%;
+    transform: translateX(0);
+    transition: transform 0.4s ease, background 0.3s ease;
+    box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 16px;
+    color: #6B7280;
+}
+
+.toggle-state:checked + .toggle .indicator {
+    transform: translateX(40px);
+    background: #4A90E2; /* Blue circle for dark mode */
+}
+
+.toggle-state:checked + .toggle .indicator::before {
+    content: "\f186"; /* Moon icon for dark mode */
+    color: #FFFFFF;
+}
+
+.toggle-state:not(:checked) + .toggle .indicator::before {
+    content: "\f185"; /* Sun icon for light mode */
+    color: #FBBF24;
+}
+
+.toggle {
+    background: #E0E5EC; /* Light mode background */
+}
+
+[data-theme="dark"] .toggle {
+    background: #0A0F1B; /* Dark mode background */
+}
+
+[data-theme="dark"] .toggle-state:checked + .toggle .indicator {
+    background: #111827;
+}
+
+[data-theme="dark"] .toggle-state:checked + .toggle .indicator::before {
+    color: #E0E5EC; /* White moon in dark mode */
+}
+
+/* Labels for Light and Dark Mode */
+.toggle-wrapper::before {
+    content: "LIGHT MODE";
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+    text-transform: uppercase;
+    margin-right: 10px;
+}
+
+.toggle-wrapper::after {
+    content: "DARK MODE";
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+    text-transform: uppercase;
+    margin-left: 10px;
+}
+
+/* Responsive Positioning */
+@media screen and (min-width: 769px) {
+    .toggle-container {
+        justify-content: flex-end; /* Align toggle to the right on larger screens */
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .toggle-container {
+        justify-content: center; /* Center toggle on smaller screens */
+    }
+    .toggle {
+        height: 35px;
+        width: 70px;
+    }
+    .indicator {
+        height: 27px;
+        width: 27px;
+    }
+    .toggle-state:checked + .toggle .indicator {
+        transform: translateX(35px);
+    }
+    .toggle-wrapper::before,
+    .toggle-wrapper::after {
+        font-size: 0.8rem;
+    }
 }
 
 /* ====================
@@ -107,14 +243,14 @@ p, span, label {
         flex-direction: row;
         justify-content: center;
         align-items: stretch;
-        gap: 40px;
+        gap: 80px; /* Spacious gap between header and login form */
     }
 
     .login-form {
         flex: 1;
-        max-width: 400px;
-        min-width: 300px;
-        padding: 30px;
+        max-width: 450px; /* Reduced size */
+        min-width: 350px;
+        padding: 50px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -122,9 +258,9 @@ p, span, label {
 
     header {
         flex: 1;
-        max-width: 400px;
-        min-width: 300px;
-        padding: 30px;
+        max-width: 450px; /* Reduced size */
+        min-width: 350px;
+        padding: 50px;
         margin-bottom: 0;
         text-align: center;
         display: flex;
@@ -171,7 +307,7 @@ p, span, label {
 
     footer {
         width: 95%;
-        max-width: 400px;
+        max-width: 350px; /* Reduced size */
         padding: 20px;
         margin: 0 10px;
     }
@@ -186,11 +322,11 @@ p, span, label {
     box-shadow: var(--shadow-neumorphic);
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 25px;
 }
 
 .login-form h1 {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     font-size: 1.8rem;
     text-align: center;
     color: var(--text-color);
@@ -237,7 +373,7 @@ p, span, label {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 25px;
     margin-top: 15px;
 }
 
@@ -436,158 +572,6 @@ p, span, label {
     }
 }
 
-/* Toggle Switch Styles */
-/* .label {
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    margin-right: 10px;  Space between toggle and logout button 
-} */
- /* Toggle Switch Styles */
-.label {
-    position: fixed;
-    top: 30px;
-    right: 30px;
-    z-index: 1000;
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    margin: 0;
-}
-@media screen and (max-width: 767px) {
-    .label {
-        top: 15px;
-        right: 15px;
-    }
-}
-
-/* Toggle Switch Styles */
-.label {
-    position: fixed;
-    top: 30px;
-    right: 30px;
-    z-index: 1000;
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-}
-
-.toggle-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.toggle {
-    position: relative;
-    height: 40px;
-    width: 80px;
-    border-radius: 20px;
-    background: var(--background);
-    box-shadow: var(--shadow-neumorphic-inset);
-    transition: background 0.3s ease;
-}
-
-.toggle-state {
-    display: none;
-}
-
-.indicator {
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    height: 32px;
-    width: 32px;
-    background: #FFFFFF;
-    border-radius: 50%;
-    transform: translateX(0);
-    transition: transform 0.4s ease, background 0.3s ease;
-    box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    font-size: 16px;
-    color: #6B7280;
-}
-
-.toggle-state:checked + .toggle .indicator {
-    transform: translateX(40px);
-    background: #4A90E2; /* Blue circle for dark mode */
-}
-
-.toggle-state:checked + .toggle .indicator::before {
-    content: "\f186"; /* Moon icon for dark mode */
-    color: #FFFFFF;
-}
-
-.toggle-state:not(:checked) + .toggle .indicator::before {
-    content: "\f185"; /* Sun icon for light mode */
-    color: #FBBF24;
-}
-
-.toggle {
-    background: #E0E5EC; /* Light mode background */
-}
-
-[data-theme="dark"] .toggle {
-    background: #0A0F1B; /* Dark mode background */
-}
-
-[data-theme="dark"] .toggle-state:checked + .toggle .indicator {
-    background: #111827;
-}
-
-[data-theme="dark"] .toggle-state:checked + .toggle .indicator::before {
-    color: #E0E5EC; /* Yellow moon in dark mode */
-}
-
-/* Labels for Light and Dark Mode */
-/* .toggle-wrapper::before {
-    content: "LIGHT MODE";
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-color);
-    text-transform: uppercase;
-    margin-right: 10px;
-}
-
-.toggle-wrapper::after {
-    content: "DARK MODE";
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-color);
-    text-transform: uppercase;
-    margin-left: 10px;
-} */
-
-/* Responsive Adjustments */
-@media screen and (max-width: 767px) {
-    .label {
-        top: 15px;
-        right: 15px;
-    }
-    .toggle {
-        height: 35px;
-        width: 70px;
-    }
-    .indicator {
-        height: 27px;
-        width: 27px;
-    }
-    .toggle-state:checked + .toggle .indicator {
-        transform: translateX(35px);
-    }
-    .toggle-wrapper::before,
-    .toggle-wrapper::after {
-        font-size: 0.8rem;
-    }
-}
-
 /* ====================
    Server Buttons
 ==================== */
@@ -684,7 +668,7 @@ footer {
     background: var(--background);
     border-radius: 15px;
     box-shadow: var(--shadow-neumorphic);
-    margin-top: 20px;
+    margin-top: 50px;
 }
 
 .footer_text_h3, .footer_text_p {
@@ -736,4 +720,3 @@ footer {
         align-items: flex-start;
     }
 }
-

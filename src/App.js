@@ -44,6 +44,8 @@ function App() {
 
     return (
         <>
+            <div className="container" data-theme={theme}>
+            <div className="toggle-container">
             <label className="label">
     <div className="toggle-wrapper">
         <input
@@ -58,7 +60,7 @@ function App() {
         </div>
     </div>
 </label>
-            <div className="container" data-theme={theme}>
+</div>
                 <div className="content">
                     {isLoggedIn ? (
                         <VideoPlayers onLogout={handleLogout} theme={theme} />

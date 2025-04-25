@@ -4,6 +4,7 @@ import { child, get, onValue, ref, set } from "firebase/database";
 import "plyr-react/plyr.css";
 import Plyr from "plyr-react";
 import "../App.css";
+import Chat from './Chat'; // Import the Chat component
 
 function VideoPlayers({ onLogout, theme, toggleTheme }) {
     const [videoUrl, setVideoUrl] = useState("");
@@ -304,6 +305,10 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                     <div className="video-players">
                         <h4>Nothing to show</h4>
                     </div>
+                )}
+                {/* Chat Component */}
+                {activeServer && username && (
+                    <Chat db={Realtimedb} serverId={activeServer} username={name || username} />
                 )}
             </div>
 

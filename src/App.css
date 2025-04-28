@@ -77,7 +77,7 @@ p, span, label {
     border-radius: 20px;
     padding: 50px;
     margin: 20px auto;
-    max-width: 1600px; /* Increased container size */
+    /* max-width: 1600px; Increased container size */
     box-shadow: var(--shadow-neumorphic);
     position: relative; /* Ensure container is a positioning context */
 }

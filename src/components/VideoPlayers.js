@@ -28,6 +28,8 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
         serverC: 0,
         serverD: 0,
     });
+    const [youtubeApiReady, setYoutubeApiReady] = useState(false); // Track YouTube API readiness
+    const plyrRef = useRef(null); // Ref for Plyr instance
 
     // Track message counts for each server to detect new messages
     const messageCountsRef = useRef({
@@ -260,51 +262,28 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
         return () => document.removeEventListener("contextmenu", handleContextMenu);
     }, []);
 
-    // Load YouTube IFrame API script dynamically
+    // Load YouTube IFrame API script only once
     useEffect(() => {
-        if (activeServer === "serverD" && youtubeVideoURL) {
-            const tag = document.createElement("script");
-            tag.src = "https://www.youtube.com/iframe_api";
-            const firstScriptTag = document.getElementsByTagName("script")[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-            return () => {
-                if (tag.parentNode) {
-                    tag.parentNode.removeChild(tag);
-                }
-            };
+        if (window.YT) {
+            setYoutubeApiReady(true);
+            return;
         }
-    }, [activeServer, youtubeVideoURL]);
 
-    // Enhanced YouTube error handling
-    useEffect(() => {
-        const originalErrorHandler = window.onerror;
+        const tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName("script")[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
         window.onYouTubeIframeAPIReady = () => {
-            try {
-                if (window.YT && window.YT.Player) {
-                    console.log("YouTube IFrame API is ready");
-                }
-            } catch (error) {
-                console.error("Error in onYouTubeIframeAPIReady:", error);
-            }
-        };
-
-        window.onerror = function (message, source, lineno, colno, error) {
-            if (
-                source?.includes("www-widgetapi.js") &&
-                message?.includes("getAttribute")
-            ) {
-                console.warn("Suppressed YouTube IFrame API error:", message);
-                return true;
-            }
-            return originalErrorHandler
-                ? originalErrorHandler(message, source, lineno, colno, error)
-                : false;
+            console.log("YouTube IFrame API is ready");
+            setYoutubeApiReady(true);
         };
 
         return () => {
-            window.onerror = originalErrorHandler;
+            // Clean up the script and callback
+            if (tag.parentNode) {
+                tag.parentNode.removeChild(tag);
+            }
             delete window.onYouTubeIframeAPIReady;
         };
     }, []);
@@ -337,6 +316,9 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
             },
             blankVideo: "https://cdn.plyr.io/static/blank.mp4",
         },
+        onReady: (event) => {
+            console.log("Plyr player is ready");
+        },
     };
 
     return (
@@ -364,9 +346,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                         <>
                             {isEnabledA && (
                                 <button
-                                    className={`serverBtn ${
-                                        activeServer === "serverA" ? "active" : ""
-                                    }`}
+                                    className={`serverBtn ${activeServer === "serverA" ? "active" : ""}`}
                                     onClick={() => handleServerChange("serverA")}
                                 >
                                     Server A
@@ -379,9 +359,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                             )}
                             {isEnabledB && (
                                 <button
-                                    className={`serverBtn ${
-                                        activeServer === "serverB" ? "active" : ""
-                                    }`}
+                                    className={`serverBtn ${activeServer === "serverB" ? "active" : ""}`}
                                     onClick={() => handleServerChange("serverB")}
                                 >
                                     Server B
@@ -394,9 +372,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                             )}
                             {isEnabledC && (
                                 <button
-                                    className={`serverBtn ${
-                                        activeServer === "serverC" ? "active" : ""
-                                    }`}
+                                    className={`serverBtn ${activeServer === "serverC" ? "active" : ""}`}
                                     onClick={() => handleServerChange("serverC")}
                                 >
                                     Server C
@@ -409,9 +385,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                             )}
                             {isEnabledD && (
                                 <button
-                                    className={`serverBtn ${
-                                        activeServer === "serverD" ? "active" : ""
-                                    }`}
+                                    className={`serverBtn ${activeServer === "serverD" ? "active" : ""}`}
                                     onClick={() => handleServerChange("serverD")}
                                 >
                                     Server D
@@ -471,10 +445,20 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                     </div>
                                 </div>
                             )}
-                            {activeServer === "serverD" && youtubeVideoURL && (
+                            {activeServer === "serverD" && youtubeVideoURL && youtubeApiReady && (
                                 <div className="iframe-wrapper">
                                     <div className="twitch-iframe">
-                                        <Plyr {...player} />
+                                        <Plyr
+                                            ref={plyrRef}
+                                            {...player}
+                                            onReady={(event) => {
+                                                console.log("Plyr player is ready");
+                                                event.detail.plyr.play(); // Attempt to play if desired
+                                            }}
+                                            onError={(event) => {
+                                                console.error("Plyr error:", event.detail);
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             )}

@@ -5,6 +5,17 @@ const Chat = ({ db, serverId, username, onNewMessage }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const lastMessageCountRef = useRef(0);
+  const chatMessagesRef = useRef(null);
+
+  const scrollToBottom = () => {
+    const chatMessages = chatMessagesRef.current;
+    if (chatMessages) {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      console.log("Scrolled to bottom, scrollHeight:", chatMessages.scrollHeight, "scrollTop:", chatMessages.scrollTop);
+    } else {
+      console.log("chatMessagesRef is not ready yet");
+    }
+  };
 
   // Fetch and listen for messages
   useEffect(() => {
@@ -35,6 +46,11 @@ const Chat = ({ db, serverId, username, onNewMessage }) => {
     return () => unsubscribe();
   }, [db, serverId, username, onNewMessage]);
 
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   // Handle sending a new message
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -52,7 +68,7 @@ const Chat = ({ db, serverId, username, onNewMessage }) => {
 
   return (
     <div className="chat-container">
-      <div className="chat-messages">
+      <div className="chat-messages" ref={chatMessagesRef}>
         {messages.map((msg) => (
           <div key={msg.id} className="chat-message">
             <span className="chat-username">{msg.username}</span>: {msg.message}

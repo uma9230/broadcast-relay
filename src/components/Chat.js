@@ -1,28 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ref, onValue, push } from 'firebase/database';
 
-const Chat = ({ db, serverId, username }) => {
+const Chat = ({ db, serverId, username, onNewMessage }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const lastMessageCountRef = useRef(0);
 
   // Fetch and listen for messages
   useEffect(() => {
     if (!serverId || !username) return;
 
     const messagesRef = ref(db, `servers/${serverId}/messages`);
-    onValue(messagesRef, (snapshot) => {
+    const unsubscribe = onValue(messagesRef, (snapshot) => {
       const data = snapshot.val();
-      const messagesList = data ? Object.values(data).map((msg, index) => ({
-        id: Object.keys(data)[index], // Use key as ID
+      const messagesList = data ? Object.entries(data).map(([id, msg]) => ({
+        id,
         ...msg,
       })) : [];
+
+      // Check for new messages by comparing message count
+      const currentMessageCount = messagesList.length;
+      if (currentMessageCount > lastMessageCountRef.current && lastMessageCountRef.current !== 0) {
+        // New message detected, notify parent
+        onNewMessage(serverId);
+      }
+      lastMessageCountRef.current = currentMessageCount;
+
       setMessages(messagesList);
     });
 
-    return () => {
-      // Cleanup listener (optional, as onValue handles this)
-    };
-  }, [db, serverId, username]);
+    // Set initial message count on first load
+    lastMessageCountRef.current = 0;
+
+    return () => unsubscribe();
+  }, [db, serverId, username, onNewMessage]);
 
   // Handle sending a new message
   const handleSendMessage = (e) => {

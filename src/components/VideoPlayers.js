@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import { Realtimedb } from "../firebase";
 import { child, get, onValue, ref, set } from "firebase/database";
 import "plyr-react/plyr.css";
@@ -22,11 +22,78 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
     const [name, setName] = useState(null);
     const [showPlayer, setShowPlayer] = useState(null);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [unreadMessages, setUnreadMessages] = useState({
+        serverA: 0,
+        serverB: 0,
+        serverC: 0,
+        serverD: 0,
+    });
+
+    // Track message counts for each server to detect new messages
+    const messageCountsRef = useRef({
+        serverA: 0,
+        serverB: 0,
+        serverC: 0,
+        serverD: 0,
+    });
 
     const handleServerChange = (server) => {
+        console.log(`Switching to server: ${server}`);
         setActiveServer(server);
         setShowPlayer(true);
+        // Mark messages as read for the selected server
+        setUnreadMessages((prev) => {
+            console.log(`Marking messages as read for ${server}, new state:`, { ...prev, [server]: 0 });
+            return {
+                ...prev,
+                [server]: 0,
+            };
+        });
     };
+
+    const handleNewMessage = (serverId) => {
+        console.log(`New message received for ${serverId}, active server is ${activeServer}`);
+        if (serverId !== activeServer) {
+            setUnreadMessages((prev) => {
+                const newCount = prev[serverId] + 1;
+                console.log(`Incrementing unread count for ${serverId} to ${newCount}`);
+                return {
+                    ...prev,
+                    [serverId]: newCount,
+                };
+            });
+        } else {
+            console.log(`Message is from active server ${serverId}, not incrementing unread count`);
+        }
+    };
+
+    // Global listener for all servers' messages
+    useEffect(() => {
+        const servers = ['serverA', 'serverB', 'serverC', 'serverD'];
+        const unsubscribes = [];
+
+        servers.forEach((serverId) => {
+            const messagesRef = ref(Realtimedb, `servers/${serverId}/messages`);
+            const unsubscribe = onValue(messagesRef, (snapshot) => {
+                const messages = snapshot.val() ? Object.keys(snapshot.val()).length : 0;
+                const previousCount = messageCountsRef.current[serverId];
+
+                if (previousCount !== 0 && messages > previousCount && serverId !== activeServer) {
+                    console.log(`Detected new message in ${serverId}: ${messages} messages (was ${previousCount})`);
+                    handleNewMessage(serverId);
+                }
+
+                messageCountsRef.current[serverId] = messages;
+            });
+
+            unsubscribes.push(unsubscribe);
+        });
+
+        // Cleanup listeners on unmount
+        return () => {
+            unsubscribes.forEach((unsubscribe) => unsubscribe());
+        };
+    }, [activeServer]);
 
     const handleIframeLoad = useCallback(() => {
         setIframeLoaded(true);
@@ -50,8 +117,15 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
     useEffect(() => {
         if (!activeServer) {
             const initialServer = getInitialActiveServer();
+            console.log(`Setting initial server to ${initialServer}`);
             setActiveServer(initialServer);
             setShowPlayer(!!initialServer);
+            if (initialServer) {
+                setUnreadMessages((prev) => ({
+                    ...prev,
+                    [initialServer]: 0,
+                }));
+            }
         }
     }, [isEnabledA, isEnabledB, isEnabledC, isEnabledD, activeServer]);
 
@@ -195,7 +269,6 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
             firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
             return () => {
-                // Optionally remove the script to prevent memory leaks
                 if (tag.parentNode) {
                     tag.parentNode.removeChild(tag);
                 }
@@ -205,10 +278,8 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
 
     // Enhanced YouTube error handling
     useEffect(() => {
-        // Store the original error handler
         const originalErrorHandler = window.onerror;
 
-        // Define the YouTube API ready callback
         window.onYouTubeIframeAPIReady = () => {
             try {
                 if (window.YT && window.YT.Player) {
@@ -219,21 +290,19 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
             }
         };
 
-        // Override the global error handler to catch YouTube API errors
         window.onerror = function (message, source, lineno, colno, error) {
             if (
                 source?.includes("www-widgetapi.js") &&
                 message?.includes("getAttribute")
             ) {
                 console.warn("Suppressed YouTube IFrame API error:", message);
-                return true; // Prevent the error from propagating
+                return true;
             }
             return originalErrorHandler
                 ? originalErrorHandler(message, source, lineno, colno, error)
                 : false;
         };
 
-        // Clean up
         return () => {
             window.onerror = originalErrorHandler;
             delete window.onYouTubeIframeAPIReady;
@@ -301,6 +370,11 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                     onClick={() => handleServerChange("serverA")}
                                 >
                                     Server A
+                                    {unreadMessages.serverA > 0 && (
+                                        <span className="notification-badge">
+                                            {unreadMessages.serverA}
+                                        </span>
+                                    )}
                                 </button>
                             )}
                             {isEnabledB && (
@@ -311,6 +385,11 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                     onClick={() => handleServerChange("serverB")}
                                 >
                                     Server B
+                                    {unreadMessages.serverB > 0 && (
+                                        <span className="notification-badge">
+                                            {unreadMessages.serverB}
+                                        </span>
+                                    )}
                                 </button>
                             )}
                             {isEnabledC && (
@@ -321,6 +400,11 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                     onClick={() => handleServerChange("serverC")}
                                 >
                                     Server C
+                                    {unreadMessages.serverC > 0 && (
+                                        <span className="notification-badge">
+                                            {unreadMessages.serverC}
+                                        </span>
+                                    )}
                                 </button>
                             )}
                             {isEnabledD && (
@@ -331,6 +415,11 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                     onClick={() => handleServerChange("serverD")}
                                 >
                                     Server D
+                                    {unreadMessages.serverD > 0 && (
+                                        <span className="notification-badge">
+                                            {unreadMessages.serverD}
+                                        </span>
+                                    )}
                                 </button>
                             )}
                         </>
@@ -400,6 +489,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                             db={Realtimedb}
                             serverId={activeServer}
                             username={name || username}
+                            onNewMessage={handleNewMessage}
                         />
                     )}
                 </div>

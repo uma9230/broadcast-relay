@@ -579,7 +579,7 @@ p, span, label {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 30px; /* Increased spacing to 30px */
     margin: 20px 0;
     width: 100%;
     max-width: 1000px;
@@ -587,6 +587,7 @@ p, span, label {
 
 .serverBtn,
 #logout-button {
+    position: relative; /* For positioning the badge */
     padding: 12px 24px;
     border-radius: 15px;
     font-size: 1rem;
@@ -608,6 +609,45 @@ p, span, label {
 
 .serverBtn.active {
     box-shadow: var(--shadow-neumorphic-inset);
+}
+
+/* Enhanced Notification Badge */
+.notification-badge {
+    position: absolute;
+    top: -10px; /* Adjusted position for better alignment */
+    right: -10px; /* Adjusted position for better alignment */
+    background: var(--error); /* Changed to red for better visibility */
+    color: #FFFFFF;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 50%;
+    width: 22px; /* Slightly larger size */
+    height: 22px; /* Slightly larger size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    animation: pulse 1.5s infinite; /* Subtle pulse animation */
+}
+
+[data-theme="dark"] .notification-badge {
+    background: var(--error); /* Consistent red color in dark mode */
+}
+
+/* Pulse Animation for New Notifications */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
 }
 
 /* ====================
@@ -706,6 +746,10 @@ footer {
     .iframe-wrapper {
         width: 95%;
         padding: 15px;
+    }
+
+    .servers {
+        gap: 20px; /* Increased to 20px for mobile */
     }
 
     .serverBtn,

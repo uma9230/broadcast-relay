@@ -496,7 +496,7 @@ p, span, label {
     padding: 8px 20px;
     font-size: 0.9rem;
     font-weight: 500;
-    color: var(--text-color);
+    color: var(--error);
     background: #E0E5EC;
     border: none;
     border-radius: 8px;
@@ -522,7 +522,7 @@ p, span, label {
     padding: 8px 20px;
     font-size: 0.9rem;
     font-weight: 500;
-    color: var(--error);
+    color: var(--text-color);
     background: none;
     border: none;
     border-radius: 8px;
@@ -531,11 +531,11 @@ p, span, label {
 }
 
 .modal-secondary-btn:hover {
-    color: #c82333;
+    color: var(--primary);
 }
 
 [data-theme="dark"] .modal-secondary-btn:hover {
-    color: #FF7875;
+    color: var(--primary-dark);
 }
 
 @keyframes fadeInUp {
@@ -891,5 +891,21 @@ footer {
         padding: 8px 16px;
         font-size: 0.9rem;
     }
+}
+
+.no-messages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #888;
+    font-size: 1.2rem;
+}
+
+.no-messages-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    width: 10%;
 }
 /*CHAT END*/

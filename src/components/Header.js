@@ -1,22 +1,28 @@
 // Header.js
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "../App.css";
-import {onValue, ref} from "firebase/database";
-import {Realtimedb} from "../firebase";
+import { db } from "../firebase";
+import { doc, onSnapshot } from "firebase/firestore";
 
-function Header({theme}) {
+function Header({ theme }) {
     const [eventName, seteventName] = useState("");
 
     useEffect(() => {
-        if (eventName === "") {
-            const eventNameRef = ref(Realtimedb, 'eventName');
-            onValue(eventNameRef, (snapshot) => {
-                const data = snapshot.val();
-                seteventName(data);
-            });
-        }
+        // Listen for event name changes from Firestore (system/eventName)
+        const docRef = doc(db, "system", "eventName");
+        const unsubscribe = onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                seteventName(data.name || "");
+            } else {
+                seteventName("");
+            }
+        }, (error) => {
+            console.error("Error fetching event name:", error);
+        });
 
-    }, [eventName]);
+        return () => unsubscribe();
+    }, []);
 
     return (
         <header>

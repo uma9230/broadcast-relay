@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { onValue, ref, set } from "firebase/database";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import "../App.css";
 import { db, Realtimedb } from "../firebase";
 import Header from "./Header";
@@ -14,11 +14,18 @@ function Login({ onLogin, theme, toggleTheme }) {
     const [showForgotModal, setShowForgotModal] = useState(false);
 
     useEffect(() => {
-        const loginStatRef = ref(Realtimedb, 'loginStatus');
-        onValue(loginStatRef, (snapshot) => {
-            const data = snapshot.val();
-            setIsLoginEnabled(data);
+        // Fetch login status from Firestore in realtime
+        const loginStatusDocRef = doc(db, "system", "loginStatus");
+        const unsubscribe = onSnapshot(loginStatusDocRef, (docSnap) => {
+            if (docSnap.exists()) {
+                setIsLoginEnabled(docSnap.data().status);
+            } else {
+                setIsLoginEnabled(true); // fallback if not set
+            }
+        }, (error) => {
+            setIsLoginEnabled(true); // fallback if error
         });
+        return () => unsubscribe();
     }, []);
 
     useEffect(() => {

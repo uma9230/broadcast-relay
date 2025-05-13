@@ -6,7 +6,7 @@ function Footer({theme}) {
     return (
         <footer>
             <p className="footer_text_h3">Hinduja College</p>
-            <p className="footer_text_p">Developed and Maintained by Abdulqadir Bhinderwala</p>
+            <p className="footer_text_p">Developed with ❤️ by Umaima & Fatema</p>
         </footer>
     );
 }

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
-import { Realtimedb } from "../firebase";
+import { Realtimedb, db } from "../firebase";
 import { child, get, onValue, ref, set } from "firebase/database";
+import { doc, onSnapshot } from "firebase/firestore";
 import "plyr-react/plyr.css";
 import Plyr from "plyr-react";
 import "../App.css";
@@ -13,29 +14,29 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
     const [activeServer, setActiveServer] = useState("");
     const [iframeLoaded, setIframeLoaded] = useState(false);
     const [isEnabledA, setIsEnabledA] = useState(true);
-    const [isEnabledC, setIsEnabledC] = useState(true);
-    const [isEnabledD, setIsEnabledD] = useState(true);
+    const [isEnabledB, setisEnabledB] = useState(true);
+    const [isEnabledC, setisEnabledC] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [username, setUsername] = useState(null);
     const [name, setName] = useState(null);
     const [showPlayer, setShowPlayer] = useState(null);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [unreadMessages, setUnreadMessages] = useState({
-        serverA: 0,
-        serverC: 0,
-        serverD: 0,
+        A: 0,
+        B: 0,
+        C: 0,
     });
     const [youtubeApiReady, setYoutubeApiReady] = useState(false);
     const plyrRef = useRef(null);
 
     // Track message counts for each server to detect new messages
     const messageCountsRef = useRef({
-        serverA: 0,
-        serverC: 0,
-        serverD: 0,
+        A: 0,
+        B: 0,
+        C: 0,
     });
 
-    const handleServerChange = (server) => {
+    const handleserverChange = (server) => {
         console.log(`Switching to server: ${server}`);
         setActiveServer(server);
         setShowPlayer(true);
@@ -67,7 +68,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
 
     // Global listener for all servers' messages
     useEffect(() => {
-        const servers = ['serverA', 'serverC', 'serverD'];
+        const servers = ['A', 'B', 'C'];
         const unsubscribes = [];
 
         servers.forEach((serverId) => {
@@ -104,11 +105,11 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
         }
     }, []);
 
-    const getInitialActiveServer = () => {
-        if (isEnabledA) return "serverA";
-        if (isEnabledC) return "serverC";
-        if (isEnabledD) return "serverD";
-        return "";
+    const getInitialActiveServer = (excludedServer = "") => {
+        if (isEnabledA && excludedServer !== "A") return "A";
+        if (isEnabledB && excludedServer !== "B") return "B";
+        if (isEnabledC && excludedServer !== "C") return "C";
+        return ""; // No available servers
     };
 
     useEffect(() => {
@@ -124,50 +125,35 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                 }));
             }
         }
-    }, [isEnabledA, isEnabledC, isEnabledD, activeServer]);
+    }, [isEnabledA, isEnabledB, isEnabledC, activeServer]);
 
     useEffect(() => {
-        const serverARef = ref(Realtimedb, "serverAStatus");
-        onValue(serverARef, (snapshot) => {
-            const data = snapshot.val();
-            setIsEnabledA(data);
-            if (activeServer === "serverA" && !data) {
-                setActiveServer(getInitialActiveServer());
-            }
-        });
+        // Firestore listeners for server status and IDs
+        const unsubscribes = [];
 
-        const serverCRef = ref(Realtimedb, "serverCStatus");
-        onValue(serverCRef, (snapshot) => {
-            const data = snapshot.val();
-            setIsEnabledC(data);
-            if (activeServer === "serverC" && !data) {
-                setActiveServer(getInitialActiveServer());
-            }
-        });
+        // Helper to listen to a server's doc
+        const listenServer = (serverKey, setStatus, setId) => {
+            const serverDoc = doc(db, "servers", serverKey);
+            const unsubscribe = onSnapshot(serverDoc, (docSnap) => {
+                const data = docSnap.data() || {};
+                setStatus(data.status);
+                setId(data.id);
+                // Switch server if current is disabled
+                if (activeServer === serverKey && !data.status) {
+                    const nextServer = getInitialActiveServer(serverKey);
+                    setActiveServer(nextServer);
+                }
+            });
+            unsubscribes.push(unsubscribe);
+        };
 
-        const serverDRef = ref(Realtimedb, "serverDStatus");
-        onValue(serverDRef, (snapshot) => {
-            const data = snapshot.val();
-            setIsEnabledD(data);
-            if (activeServer === "serverD" && !data) {
-                setActiveServer(getInitialActiveServer());
-            }
-        });
+        listenServer("A", setIsEnabledA, setVideoUrl);
+        listenServer("B", setisEnabledB, setDriveURL);
+        listenServer("C", setisEnabledC, setYoutubeVideoURL);
 
-        const serverARefID = ref(Realtimedb, "serverAID");
-        onValue(serverARefID, (snapshot) => {
-            setVideoUrl(snapshot.val());
-        });
-
-        const serverCRefID = ref(Realtimedb, "serverCID");
-        onValue(serverCRefID, (snapshot) => {
-            setDriveURL(snapshot.val());
-        });
-
-        const serverDRefID = ref(Realtimedb, "serverDID");
-        onValue(serverDRefID, (snapshot) => {
-            setYoutubeVideoURL(snapshot.val());
-        });
+        return () => {
+            unsubscribes.forEach(unsub => unsub());
+        };
     }, [activeServer]);
 
     useEffect(() => {
@@ -301,6 +287,28 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
         },
     };
 
+    // Add filter and render logic for chat messages
+    const filterMessage = (msg) => !msg.hidden;
+    const renderMessage = (msg, defaultRender) => {
+        // Highlight important messages
+        if (msg.important) {
+            return (
+                <div style={{
+                    background: '#fffde7',
+                    borderLeft: '4px solid #ffd600',
+                    padding: '0.5em 1em',
+                    margin: '0.25em 0',
+                    borderRadius: 6,
+                    fontWeight: 600
+                }}>
+                    {defaultRender ? defaultRender(msg) : msg.text || msg.message}
+                </div>
+            );
+        }
+        // Default rendering
+        return defaultRender ? defaultRender(msg) : (msg.text || msg.message);
+    };
+
     return (
         <main className="Video-section">
             <div className="video-players-header">
@@ -326,39 +334,39 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                         <>
                             {isEnabledA && (
                                 <button
-                                    className={`serverBtn ${activeServer === "serverA" ? "active" : ""}`}
-                                    onClick={() => handleServerChange("serverA")}
+                                    className={`serverBtn ${activeServer === "A" ? "active" : ""}`}
+                                    onClick={() => handleserverChange("A")}
                                 >
                                     Server A
-                                    {unreadMessages.serverA > 0 && (
+                                    {unreadMessages.A > 0 && (
                                         <span className="notification-badge">
-                                            {unreadMessages.serverA}
+                                            {unreadMessages.A}
+                                        </span>
+                                    )}
+                                </button>
+                            )}
+                            {isEnabledB && (
+                                <button
+                                    className={`serverBtn ${activeServer === "B" ? "active" : ""}`}
+                                    onClick={() => handleserverChange("B")}
+                                >
+                                    Server B
+                                    {unreadMessages.B > 0 && (
+                                        <span className="notification-badge">
+                                            {unreadMessages.B}
                                         </span>
                                     )}
                                 </button>
                             )}
                             {isEnabledC && (
                                 <button
-                                    className={`serverBtn ${activeServer === "serverC" ? "active" : ""}`}
-                                    onClick={() => handleServerChange("serverC")}
+                                    className={`serverBtn ${activeServer === "C" ? "active" : ""}`}
+                                    onClick={() => handleserverChange("C")}
                                 >
                                     Server C
-                                    {unreadMessages.serverC > 0 && (
+                                    {unreadMessages.C > 0 && (
                                         <span className="notification-badge">
-                                            {unreadMessages.serverC}
-                                        </span>
-                                    )}
-                                </button>
-                            )}
-                            {isEnabledD && (
-                                <button
-                                    className={`serverBtn ${activeServer === "serverD" ? "active" : ""}`}
-                                    onClick={() => handleServerChange("serverD")}
-                                >
-                                    Server D
-                                    {unreadMessages.serverD > 0 && (
-                                        <span className="notification-badge">
-                                            {unreadMessages.serverD}
+                                            {unreadMessages.C}
                                         </span>
                                     )}
                                 </button>
@@ -371,7 +379,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                 <div className="video-chat-container">
                     {showPlayer ? (
                         <div className="video-players">
-                            {activeServer === "serverA" && (
+                            {activeServer === "A" && (
                                 <div className="iframe-wrapper">
                                     <div className="twitch-iframe">
                                         <iframe
@@ -384,13 +392,13 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                     </div>
                                 </div>
                             )}
-                            {activeServer === "serverC" && (
+                            {activeServer === "B" && (
                                 <div className="iframe-wrapper">
                                     <div className="twitch-iframe">
                                         <iframe
                                             className="twitch-iframe"
                                             src={`https://drive.google.com/file/d/${driveURL}/preview`}
-                                            title="Server C"
+                                            title="Server B"
                                             allowFullScreen
                                             seamless=""
                                             sandbox="allow-same-origin allow-scripts"
@@ -399,7 +407,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                     </div>
                                 </div>
                             )}
-                            {activeServer === "serverD" && youtubeVideoURL && youtubeApiReady && (
+                            {activeServer === "C" && youtubeVideoURL && youtubeApiReady && (
                                 <div className="iframe-wrapper">
                                     <div className="twitch-iframe">
                                         <Plyr
@@ -428,6 +436,8 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                             serverId={activeServer}
                             username={name || username}
                             onNewMessage={handleNewMessage}
+                            filterMessage={filterMessage}
+                            renderMessage={renderMessage}
                         />
                     )}
                 </div>

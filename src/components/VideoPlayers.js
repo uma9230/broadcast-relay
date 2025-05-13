@@ -8,13 +8,11 @@ import Chat from "./Chat";
 
 function VideoPlayers({ onLogout, theme, toggleTheme }) {
     const [videoUrl, setVideoUrl] = useState("");
-    const [youtubeLiveURL, setYoutubeLiveURL] = useState("");
     const [youtubeVideoURL, setYoutubeVideoURL] = useState("");
     const [driveURL, setDriveURL] = useState("");
     const [activeServer, setActiveServer] = useState("");
     const [iframeLoaded, setIframeLoaded] = useState(false);
     const [isEnabledA, setIsEnabledA] = useState(true);
-    const [isEnabledB, setIsEnabledB] = useState(true);
     const [isEnabledC, setIsEnabledC] = useState(true);
     const [isEnabledD, setIsEnabledD] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
@@ -24,17 +22,15 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
     const [showLogoutModal, setShowLogoutModal] = useState(false);
     const [unreadMessages, setUnreadMessages] = useState({
         serverA: 0,
-        serverB: 0,
         serverC: 0,
         serverD: 0,
     });
-    const [youtubeApiReady, setYoutubeApiReady] = useState(false); // Track YouTube API readiness
-    const plyrRef = useRef(null); // Ref for Plyr instance
+    const [youtubeApiReady, setYoutubeApiReady] = useState(false);
+    const plyrRef = useRef(null);
 
     // Track message counts for each server to detect new messages
     const messageCountsRef = useRef({
         serverA: 0,
-        serverB: 0,
         serverC: 0,
         serverD: 0,
     });
@@ -71,7 +67,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
 
     // Global listener for all servers' messages
     useEffect(() => {
-        const servers = ['serverA', 'serverB', 'serverC', 'serverD'];
+        const servers = ['serverA', 'serverC', 'serverD'];
         const unsubscribes = [];
 
         servers.forEach((serverId) => {
@@ -110,7 +106,6 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
 
     const getInitialActiveServer = () => {
         if (isEnabledA) return "serverA";
-        if (isEnabledB) return "serverB";
         if (isEnabledC) return "serverC";
         if (isEnabledD) return "serverD";
         return "";
@@ -129,7 +124,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                 }));
             }
         }
-    }, [isEnabledA, isEnabledB, isEnabledC, isEnabledD, activeServer]);
+    }, [isEnabledA, isEnabledC, isEnabledD, activeServer]);
 
     useEffect(() => {
         const serverARef = ref(Realtimedb, "serverAStatus");
@@ -137,15 +132,6 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
             const data = snapshot.val();
             setIsEnabledA(data);
             if (activeServer === "serverA" && !data) {
-                setActiveServer(getInitialActiveServer());
-            }
-        });
-
-        const serverBRef = ref(Realtimedb, "serverBStatus");
-        onValue(serverBRef, (snapshot) => {
-            const data = snapshot.val();
-            setIsEnabledB(data);
-            if (activeServer === "serverB" && !data) {
                 setActiveServer(getInitialActiveServer());
             }
         });
@@ -171,11 +157,6 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
         const serverARefID = ref(Realtimedb, "serverAID");
         onValue(serverARefID, (snapshot) => {
             setVideoUrl(snapshot.val());
-        });
-
-        const serverBRefID = ref(Realtimedb, "serverBID");
-        onValue(serverBRefID, (snapshot) => {
-            setYoutubeLiveURL(snapshot.val());
         });
 
         const serverCRefID = ref(Realtimedb, "serverCID");
@@ -280,7 +261,6 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
         };
 
         return () => {
-            // Clean up the script and callback
             if (tag.parentNode) {
                 tag.parentNode.removeChild(tag);
             }
@@ -357,19 +337,6 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                     )}
                                 </button>
                             )}
-                            {isEnabledB && (
-                                <button
-                                    className={`serverBtn ${activeServer === "serverB" ? "active" : ""}`}
-                                    onClick={() => handleServerChange("serverB")}
-                                >
-                                    Server B
-                                    {unreadMessages.serverB > 0 && (
-                                        <span className="notification-badge">
-                                            {unreadMessages.serverB}
-                                        </span>
-                                    )}
-                                </button>
-                            )}
                             {isEnabledC && (
                                 <button
                                     className={`serverBtn ${activeServer === "serverC" ? "active" : ""}`}
@@ -417,19 +384,6 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                     </div>
                                 </div>
                             )}
-                            {activeServer === "serverB" && (
-                                <div className="iframe-wrapper">
-                                    <div className="twitch-iframe">
-                                        <iframe
-                                            src={`https://anym3u8player.com/tv/video-player.php?url=https%3A%2F%2Fworker-damp-poetry-68b1.1doi3.workers.dev%2Fhttp%3A%2F%2Fythls-v3.onrender.com%2Fvideo%2F${youtubeLiveURL}.m3u8`}
-                                            title="Server B"
-                                            allowFullScreen
-                                            onLoad={handleIframeLoad}
-                                            className="twitch-iframe"
-                                        />
-                                    </div>
-                                </div>
-                            )}
                             {activeServer === "serverC" && (
                                 <div className="iframe-wrapper">
                                     <div className="twitch-iframe">
@@ -453,7 +407,7 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                             {...player}
                                             onReady={(event) => {
                                                 console.log("Plyr player is ready");
-                                                event.detail.plyr.play(); // Attempt to play if desired
+                                                event.detail.plyr.play();
                                             }}
                                             onError={(event) => {
                                                 console.error("Plyr error:", event.detail);

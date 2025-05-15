@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ref, onValue, push } from 'firebase/database';
 import emptyChatImage from '../assets/empty_chat.png'; // Import the image
+import '../assets/hidden-message.css'; // Import enhanced hidden message styling
+import '../assets/important-indicator.css'; // Import enhanced important message styling
 
 const Chat = ({
   db,
@@ -37,14 +39,11 @@ const Chat = ({
             id,
             ...msg,
           }))
-        : [];
-
-      // Filter out hidden messages
+        : [];      // Use custom filter if provided, otherwise keep all messages including hidden ones
       if (typeof filterMessage === 'function') {
         messagesList = messagesList.filter(filterMessage);
-      } else {
-        messagesList = messagesList.filter(msg => !msg.hidden);
       }
+      // We no longer filter out hidden messages - we'll display them with blur styling
 
       // Sort by timestamp ascending
       messagesList.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
@@ -67,7 +66,6 @@ const Chat = ({
 
     return () => unsubscribe();
   }, [db, serverId, username, onNewMessage, filterMessage]);
-
   // Scroll to bottom whenever messages change
   useEffect(() => {
     scrollToBottom();
@@ -87,34 +85,68 @@ const Chat = ({
 
     setNewMessage(''); // Clear input
   };
-
-  // Default message rendering with important highlight
+  
+  // Default message rendering with important highlight and hidden styles
   const defaultRenderMessage = (msg) => {
+    // Determine which CSS classes to apply
+    let messageClasses = "chat-message";
+    
+    if (msg.important) {
+      messageClasses += " important-message";
+    }
+    
+    if (msg.hidden) {
+      messageClasses += " hidden-message";
+    }
+    
+    // For important messages
     if (msg.important) {
       return (
-        <div
-          style={{
-            background: '#fffde7',
-            borderLeft: '4px solid #ffd600',
-            padding: '0.5em 1em',
-            margin: '0.25em 0',
-            borderRadius: 6,
-            fontWeight: 600,
-          }}
-        >
-          <span className="chat-username">{msg.username}</span>: {msg.message}
-          <span className="chat-timestamp">
-            {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : ''}
-          </span>
+        <div 
+          className={messageClasses}
+          title={msg.hidden ? "This message is hidden by admin" : "Important message"}
+        >          <div className="important-indicator">
+            <span className="important-star">★</span>
+            <span>Important</span>
+          </div>
+          <div className="message-content">
+            <span className="chat-username">{msg.username}</span>: {msg.message}
+            <span className="chat-timestamp">
+              {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : ''}
+            </span>
+            {msg.hidden && (
+              <span 
+                className="hidden-indicator" 
+                title="This message is hidden by admin"
+                aria-label="Hidden message"
+              >
+                Hidden
+              </span>
+            )}
+          </div>
         </div>
       );
     }
+    
+    // For regular messages (including hidden ones)
     return (
-      <div className="chat-message">
+      <div 
+        className={messageClasses} 
+        title={msg.hidden ? "This message is hidden by admin" : ""}
+      >
         <span className="chat-username">{msg.username}</span>: {msg.message}
         <span className="chat-timestamp">
           {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : ''}
         </span>
+        {msg.hidden && (
+          <span 
+            className="hidden-indicator" 
+            title="This message is hidden by admin"
+            aria-label="Hidden message"
+          >
+            Hidden
+          </span>
+        )}
       </div>
     );
   };

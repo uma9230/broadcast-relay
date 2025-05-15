@@ -285,10 +285,8 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
         onReady: (event) => {
             console.log("Plyr player is ready");
         },
-    };
-
-    // Add filter and render logic for chat messages
-    const filterMessage = (msg) => !msg.hidden;
+    };    // Don't filter out hidden messages - they'll be shown with blur styling
+    const filterMessage = (msg) => true; // Show all messages including hidden ones
     const renderMessage = (msg, defaultRender) => {
         // Highlight important messages
         if (msg.important) {

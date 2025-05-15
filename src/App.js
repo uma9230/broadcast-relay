@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
+import "./assets/hidden-message.css"; // Import enhanced hidden message styling
 import Login from "./components/Login";
 import VideoPlayers from "./components/VideoPlayers";
 import Footer from "./components/Footer";

@@ -379,21 +379,18 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                         <div className="video-players">
                             {activeServer === "A" && (
                                 <div className="iframe-wrapper">
-                                    <div className="twitch-iframe">
-                                        <iframe
-                                            className="twitch-iframe"
+                                    <iframe
+                                            className="owncast-iframe"
                                             src={videoUrl}
                                             title="Server A"
                                             allowFullScreen
                                             onLoad={handleIframeLoad}
                                         ></iframe>
-                                    </div>
                                 </div>
                             )}
                             {activeServer === "B" && (
                                 <div className="iframe-wrapper">
-                                    <div className="twitch-iframe">
-                                        <iframe
+                                   <iframe
                                             className="twitch-iframe"
                                             src={`https://drive.google.com/file/d/${driveURL}/preview`}
                                             title="Server B"
@@ -402,7 +399,6 @@ function VideoPlayers({ onLogout, theme, toggleTheme }) {
                                             sandbox="allow-same-origin allow-scripts"
                                             allow="autoplay"
                                         ></iframe>
-                                    </div>
                                 </div>
                             )}
                             {activeServer === "C" && youtubeVideoURL && youtubeApiReady && (

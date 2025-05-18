@@ -676,6 +676,13 @@ p, span, label {
     border-radius: 10px;
 }
 
+.owncast-iframe {
+    width:100%;
+    aspect-ratio: 16 / 9;
+    margin: auto;
+    border-radius: 10px;
+}
+
 /* ====================
    Header and Footer
 ==================== */

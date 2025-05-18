@@ -1034,3 +1034,9 @@ footer {
     width: 10%;
 }
 /*CHAT END*/
+
+/* Logo */
+.nav-logo {
+    width: 26vh;
+    height: 10vh;
+}

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import "../App.css";
 import { db } from "../firebase";
 import { doc, onSnapshot } from "firebase/firestore";
+import greenLogo from "../assets/images/green-logo.png"; // Import the local image
 
 function Header({ theme }) {
     const [eventName, seteventName] = useState("");
@@ -26,8 +27,8 @@ function Header({ theme }) {
 
     return (
         <header>
-            <img src="https://yt3.googleusercontent.com/fkBqLGX5E_WMfwO62pXX4bEd3U7StuUF9oTtgfxTj5q-dqFzQaTR8XKMVcp8en_ICcs1xbbWGQ=s176-c-k-c0x00ffffff-no-rj" alt="Logo" className="logo" />
-            <h1>Nova Cast</h1>
+            <img src={greenLogo} alt="Logo" className="nav-logo" />
+            {/* <h1>Nova Cast</h1> */}
             <h2>TYBCA</h2>
             <h2>{`${eventName}`}</h2>
         </header>
